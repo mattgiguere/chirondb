@@ -1,0 +1,6 @@
+    'observation_id': 'INT',
+    'see_id': 'INT',
+    'seetime': 'varchar(60)',
+    'seetimejd': 'FLOAT',
+    'seeing': 'FLOAT',
+    'sairmass': 'FLOAT',

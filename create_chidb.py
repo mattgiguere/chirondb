@@ -177,6 +177,74 @@ def create_chidb(arg1, arg2):
         'gain22': 'FLOAT',
         'ron22': 'FLOAT'}
 
+    #Environment Table
+    table_dict[new_tables[2]] = {
+        'observation_id': 'INT',
+        'ccdtemp': 'FLOAT',
+        'necktemp': 'FLOAT',
+        'tempgrat': 'FLOAT',
+        'temptlow': 'FLOAT',
+        'temptcen': 'FLOAT',
+        'tempstru': 'FLOAT',
+        'tempencl': 'FLOAT',
+        'tempcoud': 'FLOAT',
+        'tempinst': 'FLOAT',
+        'tempiodin': 'FLOAT',
+        'dewpress': 'FLOAT',
+        'echpress': 'FLOAT',
+        'baromete': 'FLOAT'
+    }
+
+    #Weather Table
+    table_dict[new_tables[4]] = {
+        'observation_id': 'INT',
+        'wthr_id': 'INT',
+        'weatime': 'varchar(60)',
+        'weatimejd': 'FLOAT',
+        'outtemp': 'FLOAT',
+        'outhum': 'FLOAT',
+        'outpress': 'FLOAT',
+        'wndspeed': 'FLOAT',
+        'wnddir': 'FLOAT'
+    }
+
+    #Seeing Table
+    table_dict[new_tables[5]] = {
+        'observation_id': 'INT',
+        'see_id': 'INT',
+        'seetime': 'varchar(60)',
+        'seetimejd': 'FLOAT',
+        'seeing': 'FLOAT',
+        'sairmass': 'FLOAT'
+    }
+    #Exposure Meter Table
+    table_dict[new_tables[6]] = {
+        'observation_id': 'INT',
+        'em_id': 'INT',
+        'emtimopn': 'varchar(60)',
+        'emtimcls': 'varchar(60)',
+        'emnumsmp': 'INT',
+        'emavg': 'FLOAT',
+        'amavgsq': 'FLOAT',
+        'emprdsum': 'FLOAT',
+        'emnetint': 'FLOAT',
+        'emmnwob': 'varchar(60)',
+        'emmnwb': 'varchar(60)',
+        'thres': 'FLOAT',
+        'emtimopnjd': 'FLOAT',
+        'emmnwobjd': 'FLOAT',
+        'emmnwbjd': 'FLOAT'
+    }
+    #Reduction Table
+    table_dict[new_tables[7]] = {
+        'observation_id': 'INT',
+        'red_id': 'INT',
+        'resolutn': 'FLOAT',
+        'thidnlin': 'INT',
+        'tharfnam': 'varchar(60)',
+        'snrbp5500': 'FLOAT'
+    }
+
     cur.execute("CREATE TABLE ")
 
 if __name__ == '__main__':

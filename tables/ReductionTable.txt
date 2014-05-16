@@ -1,0 +1,6 @@
+        'observation_id': 'INT',
+        'red_id': 'INT',
+        'resolutn': 'FLOAT',
+        'thidnlin': 'INT',
+        'tharfnam': 'varchar(60)',
+        'snrbp5500': 'FLOAT',
