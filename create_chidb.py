@@ -44,38 +44,22 @@ params = {'backend': 'png',
 plt.rcParams.update(params)
 
 
-def create_chidb(arg1, arg2):
+def get_tables(arg1, arg2):
     """PURPOSE: To create the CHIRON MySQL database."""
 
-    ###connect to the database###
-    #retrieve credentials:
-    cmd = 'echo $AeroFSdir'
-    #read in the AeroFSdir string and
-    #chop off the newline character at the end
-    cdir = subprocess.check_output(cmd, shell=True)
-    cdir = cdir[0:len(cdir)-1]
-    credsf = open(cdir+'.credentials/SQL/csaye', 'r')
-    creds = credsf.read().split('\n')
-    conn = pymysql.connect(host=creds[0],
-                           port=int(creds[1]),
-                           user=creds[2],
-                           passwd=creds[3],
-                           db=creds[4])
-    cur = conn.cursor()
-
     #The new tables in the database:
-    new_tables = ['observations',
-                  'ccdsections',
-                  'environment',
-                  'weather',
-                  'seeing',
-                  'exposuremeter',
-                  'reduction']
+    table_names = ['observations',
+                   'ccdsections',
+                   'environment',
+                   'weather',
+                   'seeing',
+                   'exposuremeter',
+                   'reduction']
 
     table_dict = {}
 
     #observations table:
-    table_dict[new_tables[0]] = {
+    table_dict[table_names[0]] = {
         'observation_id': 'INT AUTO_INCREMENT PRIMARY KEY',
         'object_id': 'INT',
         'simple': 'char(1)',
@@ -142,7 +126,7 @@ def create_chidb(arg1, arg2):
         'airmass': 'FLOAT'}
 
     #CCD Sections Table
-    table_dict[new_tables[1]] = {
+    table_dict[table_names[1]] = {
         'observation_id': 'INT',
         'tsec22': 'varchar(60)',
         'asec22': 'varchar(60)',
@@ -178,7 +162,7 @@ def create_chidb(arg1, arg2):
         'ron22': 'FLOAT'}
 
     #Environment Table
-    table_dict[new_tables[2]] = {
+    table_dict[table_names[2]] = {
         'observation_id': 'INT',
         'ccdtemp': 'FLOAT',
         'necktemp': 'FLOAT',
@@ -196,7 +180,7 @@ def create_chidb(arg1, arg2):
     }
 
     #Weather Table
-    table_dict[new_tables[4]] = {
+    table_dict[table_names[4]] = {
         'observation_id': 'INT',
         'wthr_id': 'INT',
         'weatime': 'varchar(60)',
@@ -209,7 +193,7 @@ def create_chidb(arg1, arg2):
     }
 
     #Seeing Table
-    table_dict[new_tables[5]] = {
+    table_dict[table_names[5]] = {
         'observation_id': 'INT',
         'see_id': 'INT',
         'seetime': 'varchar(60)',
@@ -218,7 +202,7 @@ def create_chidb(arg1, arg2):
         'sairmass': 'FLOAT'
     }
     #Exposure Meter Table
-    table_dict[new_tables[6]] = {
+    table_dict[table_names[6]] = {
         'observation_id': 'INT',
         'em_id': 'INT',
         'emtimopn': 'varchar(60)',
@@ -236,7 +220,7 @@ def create_chidb(arg1, arg2):
         'emmnwbjd': 'FLOAT'
     }
     #Reduction Table
-    table_dict[new_tables[7]] = {
+    table_dict[table_names[7]] = {
         'observation_id': 'INT',
         'red_id': 'INT',
         'resolutn': 'FLOAT',
@@ -244,8 +228,34 @@ def create_chidb(arg1, arg2):
         'tharfnam': 'varchar(60)',
         'snrbp5500': 'FLOAT'
     }
+    return table_names, table_dict
 
-    cur.execute("CREATE TABLE ")
+
+def create_table(table_name, table_dict):
+    currentTable = table_dict[table_name]
+    currentKeys = currentTable.keys()
+
+    ###connect to the database###
+    #retrieve credentials:
+    cmd = 'echo $AeroFSdir'
+    #read in the AeroFSdir string and
+    #chop off the newline character at the end
+    cdir = subprocess.check_output(cmd, shell=True)
+    cdir = cdir[0:len(cdir)-1]
+    credsf = open(cdir+'.credentials/SQL/csaye', 'r')
+    creds = credsf.read().split('\n')
+    conn = pymysql.connect(host=creds[0],
+                           port=int(creds[1]),
+                           user=creds[2],
+                           passwd=creds[3],
+                           db=creds[4])
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE " + table_name +
+                " (" + currentKeys[0] + " " +
+                currentTable[currentKeys[0]]+")")
+
+    for key in currentKeys[1:]:
+        cur.execute("Hello")
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
