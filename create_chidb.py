@@ -4,17 +4,17 @@
 Created on 2014-05-14T15:44:41
 """
 
+from __future__ import division, print_function
+import pymysql
+import subprocess
+import sys
+
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
 __status__ = " Development NOT(Prototype or Production)"
 __version__ = '0.0.1'
 
-from __future__ import division, print_function
-import pymysql
-from __future__ import print_function
-import subprocess
-import sys
 
 #try:
 #    import numpy as np
@@ -44,7 +44,7 @@ params = {'backend': 'png',
 plt.rcParams.update(params)
 
 
-def get_tables(arg1, arg2):
+def get_tables():
     """PURPOSE: To create the CHIRON MySQL database."""
 
     #The new tables in the database:
@@ -180,7 +180,7 @@ def get_tables(arg1, arg2):
     }
 
     #Weather Table
-    table_dict[table_names[4]] = {
+    table_dict[table_names[3]] = {
         'observation_id': 'INT',
         'wthr_id': 'INT',
         'weatime': 'varchar(60)',
@@ -193,7 +193,7 @@ def get_tables(arg1, arg2):
     }
 
     #Seeing Table
-    table_dict[table_names[5]] = {
+    table_dict[table_names[4]] = {
         'observation_id': 'INT',
         'see_id': 'INT',
         'seetime': 'varchar(60)',
@@ -202,7 +202,7 @@ def get_tables(arg1, arg2):
         'sairmass': 'FLOAT'
     }
     #Exposure Meter Table
-    table_dict[table_names[6]] = {
+    table_dict[table_names[5]] = {
         'observation_id': 'INT',
         'em_id': 'INT',
         'emtimopn': 'varchar(60)',
@@ -220,7 +220,7 @@ def get_tables(arg1, arg2):
         'emmnwbjd': 'FLOAT'
     }
     #Reduction Table
-    table_dict[table_names[7]] = {
+    table_dict[table_names[6]] = {
         'observation_id': 'INT',
         'red_id': 'INT',
         'resolutn': 'FLOAT',
@@ -255,7 +255,13 @@ def create_table(table_name, table_dict):
                 currentTable[currentKeys[0]]+")")
 
     for key in currentKeys[1:]:
-        cur.execute("Hello")
+        cur.execute("ALTER TABLE " + currentTable + " ADD (" +
+                    key + ' ' + currentTable[key]+')')
+
+
+def createdb(arg1):
+    table_names, table_dict = get_tables()
+    create_table(table_names[arg1], table_dict)
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
@@ -271,4 +277,4 @@ if __name__ == '__main__':
     arg1 = int(sys.argv[2])
     arg2 = str(sys.argv[1])
 
-    create_chidb(arg1, arg2)
+    createdb(arg1)
