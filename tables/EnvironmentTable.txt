@@ -1,14 +1,15 @@
-                'observation_id': 'INT',
-                'ccdtemp': 'FLOAT',
-                'necktemp': 'FLOAT',
-                'tempgrat': 'FLOAT',
-                'temptlow': 'FLOAT',
-                'temptcen': 'FLOAT',
-                'tempstru': 'FLOAT',
-                'tempencl': 'FLOAT',
-                'tempcoud': 'FLOAT',
-                'tempinst': 'FLOAT',
-                'tempiodin   FLOAT',
-                'dewpress': 'FLOAT',
-                'echpress': 'FLOAT',
-                'baromete': 'FLOAT'
+fieldName,variableType
+observation_id, INT
+ccdtemp, FLOAT
+necktemp, FLOAT
+tempgrat, FLOAT
+temptlow, FLOAT
+temptcen, FLOAT
+tempstru, FLOAT
+tempencl, FLOAT
+tempcoud, FLOAT
+tempinst, FLOAT
+tempiodin, LOAT
+dewpress, FLOAT
+echpress, FLOAT
+baromete, FLOAT

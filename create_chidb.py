@@ -9,7 +9,7 @@ import pymysql
 import subprocess
 import sys
 import argparse
-from collections import OrderedDict
+import pandas
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
@@ -61,178 +61,31 @@ def getTables():
     table_dict = {}
 
     #observations table:
-    observationsTable = OrderedDict()
-    observationsTable['observation_id'] = 'INT AUTO_INCREMENT PRIMARY KEY'
-    observationsTable['object_id'] = 'INT'
-    observationsTable['simple'] = 'char(1)'
-    observationsTable['bitpix'] = 'FLOAT'
-    observationsTable['naxis'] = 'INT'
-    observationsTable['naxis1'] = 'INT'
-    observationsTable['naxis2'] = 'INT'
-    observationsTable['extend'] = 'char(1)'
-    observationsTable['bzero'] = 'INT'
-    observationsTable['bscale'] = 'INT'
-    observationsTable['object'] = 'varchar(60)'
-    observationsTable['observer'] = 'varchar(60)'
-    observationsTable['propid'] = 'INT'
-    observationsTable['obsid'] = 'varchar(60)'
-    observationsTable['imagetyp'] = 'varchar(60)'
-    observationsTable['ccdsum'] = 'varchar(60)'
-    observationsTable['roireq'] = 'varchar(60)'
-    observationsTable['utshut'] = 'varchar(60)'
-    observationsTable['date'] = 'varchar(60)'
-    observationsTable['nampsyx'] = 'varchar(60)'
-    observationsTable['amplist'] = 'varchar(60)'
-    observationsTable['detector'] = 'varchar(60)'
-    observationsTable['fpa'] = 'varchar(60)'
-    observationsTable['rexptime'] = 'FLOAT'
-    observationsTable['exptime'] = 'FLOAT'
-    observationsTable['texptime'] = 'FLOAT'
-    observationsTable['darktime'] = 'FLOAT'
-    observationsTable['nimages'] = 'INT'
-    observationsTable['dheinf'] = 'varchar(60)'
-    observationsTable['dhefirm'] = 'varchar(60)'
-    observationsTable['speedmod'] = 'varchar(60)'
-    observationsTable['geommod'] = 'varchar(60)'
-    observationsTable['pixtime'] = 'FLOAT'
-    observationsTable['powstat'] = 'FLOAT'
-    observationsTable['fpgafirm'] = 'FLOAT'
-    observationsTable['slot00'] = 'varchar(60)'
-    observationsTable['slot01'] = 'varchar(60)'
-    observationsTable['slot02'] = 'varchar(60)'
-    observationsTable['slot03'] = 'varchar(60)'
-    observationsTable['slot04'] = 'varchar(60)'
-    observationsTable['slot07'] = 'varchar(60)'
-    observationsTable['slot02'] = 'varchar(60)'
-    observationsTable['panid'] = 'varchar(60)'
-    observationsTable['comment'] = 'varchar(60)'
-    observationsTable['dhsid'] = 'varchar(60)'
-    observationsTable['deckpos'] = 'FLOAT'
-    observationsTable['decker'] = 'varchar(60)'
-    observationsTable['focus'] = 'FLOAT'
-    observationsTable['maxexp'] = 'INT'
-    observationsTable['pmhv'] = 'varchar(60)'
-    observationsTable['complamp'] = 'varchar(60)'
-    observationsTable['iodcell'] = 'varchar(60)'
-    observationsTable['observat'] = 'varchar(60)'
-    observationsTable['telescop'] = 'varchar(60)'
-    observationsTable['date_obs'] = 'varchar(60)'
-    observationsTable['ut'] = 'varchar(60)'
-    observationsTable['obs_ra'] = 'varchar(60)'
-    observationsTable['obs_dec'] = 'varchar(60)'
-    observationsTable['epoch'] = 'FLOAT'
-    observationsTable['alt'] = 'FLOAT'
-    observationsTable['ha'] = 'FLOAT'
-    observationsTable['st'] = 'varchar(60)'
-    observationsTable['zd'] = 'FLOAT'
-    observationsTable['airmass'] = 'FLOAT'
+    observationsTable = pandas.read_csv('tables/ObservationsTable.txt')
     table_dict[table_names[0]] = observationsTable
 
     #CCD Sections Table
-    ccdSectionsTable = OrderedDict()
-    ccdSectionsTable['observation_id'] = 'INT'
-    ccdSectionsTable['tsec22'] = 'varchar(60)'
-    ccdSectionsTable['asec22'] = 'varchar(60)'
-    ccdSectionsTable['csec22'] = 'varchar(60)'
-    ccdSectionsTable['bsec22'] = 'varchar(60)'
-    ccdSectionsTable['dsec22'] = 'varchar(60)'
-    ccdSectionsTable['scsec22'] = 'varchar(60)'
-    ccdSectionsTable['tsec12'] = 'varchar(60)'
-    ccdSectionsTable['asec12'] = 'varchar(60)'
-    ccdSectionsTable['csec12'] = 'varchar(60)'
-    ccdSectionsTable['bsec12'] = 'varchar(60)'
-    ccdSectionsTable['dsec12'] = 'varchar(60)'
-    ccdSectionsTable['scsec12'] = 'varchar(60)'
-    ccdSectionsTable['tsec11'] = 'varchar(60)'
-    ccdSectionsTable['asec11'] = 'varchar(60)'
-    ccdSectionsTable['csec11'] = 'varchar(60)'
-    ccdSectionsTable['bsec11'] = 'varchar(60)'
-    ccdSectionsTable['dsec11'] = 'varchar(60)'
-    ccdSectionsTable['scsec11'] = 'varchar(60)'
-    ccdSectionsTable['tsec21'] = 'varchar(60)'
-    ccdSectionsTable['asec21'] = 'varchar(60)'
-    ccdSectionsTable['csec21'] = 'varchar(60)'
-    ccdSectionsTable['bsec21'] = 'varchar(60)'
-    ccdSectionsTable['dsec21'] = 'varchar(60)'
-    ccdSectionsTable['scsec21'] = 'varchar(60)'
-    ccdSectionsTable['gain11'] = 'FLOAT'
-    ccdSectionsTable['ron11'] = 'FLOAT'
-    ccdSectionsTable['gain12'] = 'FLOAT'
-    ccdSectionsTable['ron12'] = 'FLOAT'
-    ccdSectionsTable['gain21'] = 'FLOAT'
-    ccdSectionsTable['ron21'] = 'FLOAT'
-    ccdSectionsTable['gain22'] = 'FLOAT'
-    ccdSectionsTable['ron22'] = 'FLOAT'
+    ccdSectionsTable = pandas.read_csv('tables/CCDSectionsTable.txt')
     table_dict[table_names[1]] = ccdSectionsTable
 
     #Environment Table
-    environmentTable = OrderedDict()
-    environmentTable['observation_id'] = 'INT'
-    environmentTable['ccdtemp'] = 'FLOAT'
-    environmentTable['necktemp'] = 'FLOAT'
-    environmentTable['tempgrat'] = 'FLOAT'
-    environmentTable['temptlow'] = 'FLOAT'
-    environmentTable['temptcen'] = 'FLOAT'
-    environmentTable['tempstru'] = 'FLOAT'
-    environmentTable['tempencl'] = 'FLOAT'
-    environmentTable['tempcoud'] = 'FLOAT'
-    environmentTable['tempinst'] = 'FLOAT'
-    environmentTable['tempiodin'] = 'FLOAT'
-    environmentTable['dewpress'] = 'FLOAT'
-    environmentTable['echpress'] = 'FLOAT'
-    environmentTable['baromete'] = 'FLOAT'
+    environmentTable = pandas.read_csv('tables/EnvironmentTable.txt')
     table_dict[table_names[2]] = environmentTable
 
     #Weather Table
-    weatherTable = OrderedDict()
-    weatherTable['observation_id'] = 'INT'
-    weatherTable['wthr_id'] = 'INT'
-    weatherTable['weatime'] = 'varchar(60)'
-    weatherTable['weatimejd'] = 'FLOAT'
-    weatherTable['outtemp'] = 'FLOAT'
-    weatherTable['outhum'] = 'FLOAT'
-    weatherTable['outpress'] = 'FLOAT'
-    weatherTable['wndspeed'] = 'FLOAT'
-    weatherTable['wnddir'] = 'FLOAT'
+    weatherTable = pandas.read_csv('tables/WeatherTable.txt')
     table_dict[table_names[3]] = weatherTable
 
     #Seeing Table
-    seeingTable = OrderedDict()
-    seeingTable['observation_id'] = 'INT'
-    seeingTable['see_id'] = 'INT'
-    seeingTable['seetime'] = 'varchar(60)'
-    seeingTable['seetimejd'] = 'FLOAT'
-    seeingTable['seeing'] = 'FLOAT'
-    seeingTable['sairmass'] = 'FLOAT'
+    seeingTable = pandas.read_csv('tables/SeeingTable.txt')
     table_dict[table_names[4]] = seeingTable
 
     #Exposure Meter Table
-    exposureMeterTable = OrderedDict()
-    exposureMeterTable['observation_id'] = 'INT'
-    exposureMeterTable['em_id'] = 'INT'
-    exposureMeterTable['emtimopn'] = 'varchar(60)'
-    exposureMeterTable['emtimcls'] = 'varchar(60)'
-    exposureMeterTable['emnumsmp'] = 'INT'
-    exposureMeterTable['emavg'] = 'FLOAT'
-    exposureMeterTable['amavgsq'] = 'FLOAT'
-    exposureMeterTable['emprdsum'] = 'FLOAT'
-    exposureMeterTable['emnetint'] = 'FLOAT'
-    exposureMeterTable['emmnwob'] = 'varchar(60)'
-    exposureMeterTable['emmnwb'] = 'varchar(60)'
-    exposureMeterTable['thres'] = 'FLOAT'
-    exposureMeterTable['emtimopnjd'] = 'FLOAT'
-    exposureMeterTable['emmnwobjd'] = 'FLOAT'
-    exposureMeterTable['emmnwbjd'] = 'FLOAT'
+    exposureMeterTable = pandas.read_csv('tables/ExposureMeterTable.txt')
     table_dict[table_names[5]] = exposureMeterTable
 
     #Reduction Table
-    reductionTable = OrderedDict()
-    reductionTable['observation_id'] = 'INT'
-    reductionTable['red_id'] = 'INT'
-    reductionTable['resolutn'] = 'FLOAT'
-    reductionTable['thidnlin'] = 'INT'
-    reductionTable['tharfnam'] = 'varchar(60)'
-    reductionTable['snrbp5500'] = 'FLOAT'
+    reductionTable = pandas.read_csv('tables/ReductionTable.txt')
     table_dict[table_names[6]] = reductionTable
 
     return table_names, table_dict
@@ -240,7 +93,8 @@ def getTables():
 
 def createTable(table_name, table_dict):
     currentTable = table_dict[table_name]
-    currentKeys = currentTable.keys()
+    currentKeys = currentTable['fieldName']
+    currentVarTypes = currentTable['variableType']
 
     ###connect to the database###
     #retrieve credentials:
@@ -266,7 +120,9 @@ def createTable(table_name, table_dict):
 
     cur.execute("DESCRIBE "+table_name)
     preexistingKeys = [x[0] for x in cur.fetchall()]
-    for key in currentKeys:
+    for idx in range(len(currentKeys)):
+        key = currentKeys[idx].strip()
+        varType = currentVarTypes[idx].strip()
         print('***************************************')
         print(key)
         if key in preexistingKeys:
@@ -274,12 +130,12 @@ def createTable(table_name, table_dict):
         else:
             print('Now adding '+key)
             cur.execute("ALTER TABLE " + table_name + " ADD (" +
-                        key + ' ' + currentTable[key]+')')
+                        key + ' ' + varType + ')')
 
 
 def removeTableFields(table_name, table_dict):
     currentTable = table_dict[table_name]
-    currentKeys = currentTable.keys()
+    currentKeys = currentTable['fieldName']
 
     ###connect to the database###
     #retrieve credentials:
@@ -305,7 +161,8 @@ def removeTableFields(table_name, table_dict):
 
     cur.execute("DESCRIBE "+table_name)
     preexistingKeys = [x[0] for x in cur.fetchall()]
-    for key in currentKeys:
+    for idx in range(len(currentKeys)):
+        key = currentKeys[idx].strip()
         print('***************************************')
         print(key)
         if key in preexistingKeys:
