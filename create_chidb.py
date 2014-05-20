@@ -8,6 +8,8 @@ from __future__ import division, print_function
 import pymysql
 import subprocess
 import sys
+import argparse
+from collections import OrderedDict
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
@@ -44,7 +46,7 @@ params = {'backend': 'png',
 plt.rcParams.update(params)
 
 
-def get_tables():
+def getTables():
     """PURPOSE: To create the CHIRON MySQL database."""
 
     #The new tables in the database:
@@ -59,179 +61,184 @@ def get_tables():
     table_dict = {}
 
     #observations table:
-    table_dict[table_names[0]] = {
-        'observation_id': 'INT AUTO_INCREMENT PRIMARY KEY',
-        'object_id': 'INT',
-        'simple': 'char(1)',
-        'bitpix': 'FLOAT',
-        'naxis': 'INT',
-        'naxis1': 'INT',
-        'naxis2': 'INT',
-        'extend': 'char(1)',
-        'bzero': 'INT',
-        'bscale': 'INT',
-        'object': 'varchar(60)',
-        'observer': 'varchar(60)',
-        'propid': 'INT',
-        'obsid': 'varchar(60)',
-        'imagetyp': 'varchar(60)',
-        'ccdsum': 'varchar(60)',
-        'roireq': 'varchar(60)',
-        'utshut': 'varchar(60)',
-        'date': 'varchar(60)',
-        'nampsyx': 'varchar(60)',
-        'amplist': 'varchar(60)',
-        'detector': 'varchar(60)',
-        'fpa': 'varchar(60)',
-        'rexptime': 'FLOAT',
-        'exptime': 'FLOAT',
-        'texptime': 'FLOAT',
-        'darktime': 'FLOAT',
-        'nimages': 'INT',
-        'dheinf': 'varchar(60)',
-        'dhefirm': 'varchar(60)',
-        'speedmod': 'varchar(60)',
-        'geommod': 'varchar(60)',
-        'pixtime': 'FLOAT',
-        'powstat': 'FLOAT',
-        'fpgafirm': 'FLOAT',
-        'slot00': 'varchar(60)',
-        'slot01': 'varchar(60)',
-        'slot02': 'varchar(60)',
-        'slot03': 'varchar(60)',
-        'slot04': 'varchar(60)',
-        'slot07': 'varchar(60)',
-        'slot02': 'varchar(60)',
-        'panid': 'varchar(60)',
-        'comment': 'varchar(60)',
-        'dhsid': 'varchar(60)',
-        'deckpos': 'FLOAT',
-        'decker': 'varchar(60)',
-        'focus': 'FLOAT',
-        'maxexp': 'INT',
-        'pmhv': 'varchar(60)',
-        'complamp': 'varchar(60)',
-        'iodcell': 'varchar(60)',
-        'observat': 'varchar(60)',
-        'telescop': 'varchar(60)',
-        'date-obs': 'varchar(60)',
-        'ut': 'varchar(60)',
-        'ra': 'varchar(60)',
-        'dec': 'varchar(60)',
-        'epoch': 'FLOAT',
-        'alt': 'FLOAT',
-        'ha': 'FLOAT',
-        'st': 'varchar(60)',
-        'zd': 'FLOAT',
-        'airmass': 'FLOAT'}
+    observationsTable = OrderedDict()
+    observationsTable['observation_id'] = 'INT AUTO_INCREMENT PRIMARY KEY'
+    observationsTable['object_id'] = 'INT'
+    observationsTable['simple'] = 'char(1)'
+    observationsTable['bitpix'] = 'FLOAT'
+    observationsTable['naxis'] = 'INT'
+    observationsTable['naxis1'] = 'INT'
+    observationsTable['naxis2'] = 'INT'
+    observationsTable['extend'] = 'char(1)'
+    observationsTable['bzero'] = 'INT'
+    observationsTable['bscale'] = 'INT'
+    observationsTable['object'] = 'varchar(60)'
+    observationsTable['observer'] = 'varchar(60)'
+    observationsTable['propid'] = 'INT'
+    observationsTable['obsid'] = 'varchar(60)'
+    observationsTable['imagetyp'] = 'varchar(60)'
+    observationsTable['ccdsum'] = 'varchar(60)'
+    observationsTable['roireq'] = 'varchar(60)'
+    observationsTable['utshut'] = 'varchar(60)'
+    observationsTable['date'] = 'varchar(60)'
+    observationsTable['nampsyx'] = 'varchar(60)'
+    observationsTable['amplist'] = 'varchar(60)'
+    observationsTable['detector'] = 'varchar(60)'
+    observationsTable['fpa'] = 'varchar(60)'
+    observationsTable['rexptime'] = 'FLOAT'
+    observationsTable['exptime'] = 'FLOAT'
+    observationsTable['texptime'] = 'FLOAT'
+    observationsTable['darktime'] = 'FLOAT'
+    observationsTable['nimages'] = 'INT'
+    observationsTable['dheinf'] = 'varchar(60)'
+    observationsTable['dhefirm'] = 'varchar(60)'
+    observationsTable['speedmod'] = 'varchar(60)'
+    observationsTable['geommod'] = 'varchar(60)'
+    observationsTable['pixtime'] = 'FLOAT'
+    observationsTable['powstat'] = 'FLOAT'
+    observationsTable['fpgafirm'] = 'FLOAT'
+    observationsTable['slot00'] = 'varchar(60)'
+    observationsTable['slot01'] = 'varchar(60)'
+    observationsTable['slot02'] = 'varchar(60)'
+    observationsTable['slot03'] = 'varchar(60)'
+    observationsTable['slot04'] = 'varchar(60)'
+    observationsTable['slot07'] = 'varchar(60)'
+    observationsTable['slot02'] = 'varchar(60)'
+    observationsTable['panid'] = 'varchar(60)'
+    observationsTable['comment'] = 'varchar(60)'
+    observationsTable['dhsid'] = 'varchar(60)'
+    observationsTable['deckpos'] = 'FLOAT'
+    observationsTable['decker'] = 'varchar(60)'
+    observationsTable['focus'] = 'FLOAT'
+    observationsTable['maxexp'] = 'INT'
+    observationsTable['pmhv'] = 'varchar(60)'
+    observationsTable['complamp'] = 'varchar(60)'
+    observationsTable['iodcell'] = 'varchar(60)'
+    observationsTable['observat'] = 'varchar(60)'
+    observationsTable['telescop'] = 'varchar(60)'
+    observationsTable['date_obs'] = 'varchar(60)'
+    observationsTable['ut'] = 'varchar(60)'
+    observationsTable['obs_ra'] = 'varchar(60)'
+    observationsTable['obs_dec'] = 'varchar(60)'
+    observationsTable['epoch'] = 'FLOAT'
+    observationsTable['alt'] = 'FLOAT'
+    observationsTable['ha'] = 'FLOAT'
+    observationsTable['st'] = 'varchar(60)'
+    observationsTable['zd'] = 'FLOAT'
+    observationsTable['airmass'] = 'FLOAT'
+    table_dict[table_names[0]] = observationsTable
 
     #CCD Sections Table
-    table_dict[table_names[1]] = {
-        'observation_id': 'INT',
-        'tsec22': 'varchar(60)',
-        'asec22': 'varchar(60)',
-        'csec22': 'varchar(60)',
-        'bsec22': 'varchar(60)',
-        'dsec22': 'varchar(60)',
-        'scsec22': 'varchar(60)',
-        'tsec12': 'varchar(60)',
-        'asec12': 'varchar(60)',
-        'csec12': 'varchar(60)',
-        'bsec12': 'varchar(60)',
-        'dsec12': 'varchar(60)',
-        'scsec12': 'varchar(60)',
-        'tsec11': 'varchar(60)',
-        'asec11': 'varchar(60)',
-        'csec11': 'varchar(60)',
-        'bsec11': 'varchar(60)',
-        'dsec11': 'varchar(60)',
-        'scsec11': 'varchar(60)',
-        'tsec21': 'varchar(60)',
-        'asec21': 'varchar(60)',
-        'csec21': 'varchar(60)',
-        'bsec21': 'varchar(60)',
-        'dsec21': 'varchar(60)',
-        'scsec21': 'varchar(60)',
-        'gain11': 'FLOAT',
-        'ron11': 'FLOAT',
-        'gain12': 'FLOAT',
-        'ron12': 'FLOAT',
-        'gain21': 'FLOAT',
-        'ron21': 'FLOAT',
-        'gain22': 'FLOAT',
-        'ron22': 'FLOAT'}
+    ccdSectionsTable = OrderedDict()
+    ccdSectionsTable['observation_id'] = 'INT'
+    ccdSectionsTable['tsec22'] = 'varchar(60)'
+    ccdSectionsTable['asec22'] = 'varchar(60)'
+    ccdSectionsTable['csec22'] = 'varchar(60)'
+    ccdSectionsTable['bsec22'] = 'varchar(60)'
+    ccdSectionsTable['dsec22'] = 'varchar(60)'
+    ccdSectionsTable['scsec22'] = 'varchar(60)'
+    ccdSectionsTable['tsec12'] = 'varchar(60)'
+    ccdSectionsTable['asec12'] = 'varchar(60)'
+    ccdSectionsTable['csec12'] = 'varchar(60)'
+    ccdSectionsTable['bsec12'] = 'varchar(60)'
+    ccdSectionsTable['dsec12'] = 'varchar(60)'
+    ccdSectionsTable['scsec12'] = 'varchar(60)'
+    ccdSectionsTable['tsec11'] = 'varchar(60)'
+    ccdSectionsTable['asec11'] = 'varchar(60)'
+    ccdSectionsTable['csec11'] = 'varchar(60)'
+    ccdSectionsTable['bsec11'] = 'varchar(60)'
+    ccdSectionsTable['dsec11'] = 'varchar(60)'
+    ccdSectionsTable['scsec11'] = 'varchar(60)'
+    ccdSectionsTable['tsec21'] = 'varchar(60)'
+    ccdSectionsTable['asec21'] = 'varchar(60)'
+    ccdSectionsTable['csec21'] = 'varchar(60)'
+    ccdSectionsTable['bsec21'] = 'varchar(60)'
+    ccdSectionsTable['dsec21'] = 'varchar(60)'
+    ccdSectionsTable['scsec21'] = 'varchar(60)'
+    ccdSectionsTable['gain11'] = 'FLOAT'
+    ccdSectionsTable['ron11'] = 'FLOAT'
+    ccdSectionsTable['gain12'] = 'FLOAT'
+    ccdSectionsTable['ron12'] = 'FLOAT'
+    ccdSectionsTable['gain21'] = 'FLOAT'
+    ccdSectionsTable['ron21'] = 'FLOAT'
+    ccdSectionsTable['gain22'] = 'FLOAT'
+    ccdSectionsTable['ron22'] = 'FLOAT'
+    table_dict[table_names[1]] = ccdSectionsTable
 
     #Environment Table
-    table_dict[table_names[2]] = {
-        'observation_id': 'INT',
-        'ccdtemp': 'FLOAT',
-        'necktemp': 'FLOAT',
-        'tempgrat': 'FLOAT',
-        'temptlow': 'FLOAT',
-        'temptcen': 'FLOAT',
-        'tempstru': 'FLOAT',
-        'tempencl': 'FLOAT',
-        'tempcoud': 'FLOAT',
-        'tempinst': 'FLOAT',
-        'tempiodin': 'FLOAT',
-        'dewpress': 'FLOAT',
-        'echpress': 'FLOAT',
-        'baromete': 'FLOAT'
-    }
+    environmentTable = OrderedDict()
+    environmentTable['observation_id'] = 'INT'
+    environmentTable['ccdtemp'] = 'FLOAT'
+    environmentTable['necktemp'] = 'FLOAT'
+    environmentTable['tempgrat'] = 'FLOAT'
+    environmentTable['temptlow'] = 'FLOAT'
+    environmentTable['temptcen'] = 'FLOAT'
+    environmentTable['tempstru'] = 'FLOAT'
+    environmentTable['tempencl'] = 'FLOAT'
+    environmentTable['tempcoud'] = 'FLOAT'
+    environmentTable['tempinst'] = 'FLOAT'
+    environmentTable['tempiodin'] = 'FLOAT'
+    environmentTable['dewpress'] = 'FLOAT'
+    environmentTable['echpress'] = 'FLOAT'
+    environmentTable['baromete'] = 'FLOAT'
+    table_dict[table_names[2]] = environmentTable
 
     #Weather Table
-    table_dict[table_names[3]] = {
-        'observation_id': 'INT',
-        'wthr_id': 'INT',
-        'weatime': 'varchar(60)',
-        'weatimejd': 'FLOAT',
-        'outtemp': 'FLOAT',
-        'outhum': 'FLOAT',
-        'outpress': 'FLOAT',
-        'wndspeed': 'FLOAT',
-        'wnddir': 'FLOAT'
-    }
+    weatherTable = OrderedDict()
+    weatherTable['observation_id'] = 'INT'
+    weatherTable['wthr_id'] = 'INT'
+    weatherTable['weatime'] = 'varchar(60)'
+    weatherTable['weatimejd'] = 'FLOAT'
+    weatherTable['outtemp'] = 'FLOAT'
+    weatherTable['outhum'] = 'FLOAT'
+    weatherTable['outpress'] = 'FLOAT'
+    weatherTable['wndspeed'] = 'FLOAT'
+    weatherTable['wnddir'] = 'FLOAT'
+    table_dict[table_names[3]] = weatherTable
 
     #Seeing Table
-    table_dict[table_names[4]] = {
-        'observation_id': 'INT',
-        'see_id': 'INT',
-        'seetime': 'varchar(60)',
-        'seetimejd': 'FLOAT',
-        'seeing': 'FLOAT',
-        'sairmass': 'FLOAT'
-    }
+    seeingTable = OrderedDict()
+    seeingTable['observation_id'] = 'INT'
+    seeingTable['see_id'] = 'INT'
+    seeingTable['seetime'] = 'varchar(60)'
+    seeingTable['seetimejd'] = 'FLOAT'
+    seeingTable['seeing'] = 'FLOAT'
+    seeingTable['sairmass'] = 'FLOAT'
+    table_dict[table_names[4]] = seeingTable
+
     #Exposure Meter Table
-    table_dict[table_names[5]] = {
-        'observation_id': 'INT',
-        'em_id': 'INT',
-        'emtimopn': 'varchar(60)',
-        'emtimcls': 'varchar(60)',
-        'emnumsmp': 'INT',
-        'emavg': 'FLOAT',
-        'amavgsq': 'FLOAT',
-        'emprdsum': 'FLOAT',
-        'emnetint': 'FLOAT',
-        'emmnwob': 'varchar(60)',
-        'emmnwb': 'varchar(60)',
-        'thres': 'FLOAT',
-        'emtimopnjd': 'FLOAT',
-        'emmnwobjd': 'FLOAT',
-        'emmnwbjd': 'FLOAT'
-    }
+    exposureMeterTable = OrderedDict()
+    exposureMeterTable['observation_id'] = 'INT'
+    exposureMeterTable['em_id'] = 'INT'
+    exposureMeterTable['emtimopn'] = 'varchar(60)'
+    exposureMeterTable['emtimcls'] = 'varchar(60)'
+    exposureMeterTable['emnumsmp'] = 'INT'
+    exposureMeterTable['emavg'] = 'FLOAT'
+    exposureMeterTable['amavgsq'] = 'FLOAT'
+    exposureMeterTable['emprdsum'] = 'FLOAT'
+    exposureMeterTable['emnetint'] = 'FLOAT'
+    exposureMeterTable['emmnwob'] = 'varchar(60)'
+    exposureMeterTable['emmnwb'] = 'varchar(60)'
+    exposureMeterTable['thres'] = 'FLOAT'
+    exposureMeterTable['emtimopnjd'] = 'FLOAT'
+    exposureMeterTable['emmnwobjd'] = 'FLOAT'
+    exposureMeterTable['emmnwbjd'] = 'FLOAT'
+    table_dict[table_names[5]] = exposureMeterTable
+
     #Reduction Table
-    table_dict[table_names[6]] = {
-        'observation_id': 'INT',
-        'red_id': 'INT',
-        'resolutn': 'FLOAT',
-        'thidnlin': 'INT',
-        'tharfnam': 'varchar(60)',
-        'snrbp5500': 'FLOAT'
-    }
+    reductionTable = OrderedDict()
+    reductionTable['observation_id'] = 'INT'
+    reductionTable['red_id'] = 'INT'
+    reductionTable['resolutn'] = 'FLOAT'
+    reductionTable['thidnlin'] = 'INT'
+    reductionTable['tharfnam'] = 'varchar(60)'
+    reductionTable['snrbp5500'] = 'FLOAT'
+    table_dict[table_names[6]] = reductionTable
+
     return table_names, table_dict
 
 
-def create_table(table_name, table_dict):
+def createTable(table_name, table_dict):
     currentTable = table_dict[table_name]
     currentKeys = currentTable.keys()
 
@@ -250,31 +257,98 @@ def create_table(table_name, table_dict):
                            passwd=creds[3],
                            db=creds[4])
     cur = conn.cursor()
-    cur.execute("CREATE TABLE " + table_name +
-                " (" + currentKeys[0] + " " +
-                currentTable[currentKeys[0]]+")")
+    cur.execute("SHOW TABLES")
+    preExistingTables = cur.fetchall()
+    if (not((table_name,) in preExistingTables)):
+        cur.execute("CREATE TABLE " + table_name +
+                    " (" + currentKeys[0] + " " +
+                    currentTable[currentKeys[0]]+")")
 
-    for key in currentKeys[1:]:
-        cur.execute("ALTER TABLE " + currentTable + " ADD (" +
-                    key + ' ' + currentTable[key]+')')
+    cur.execute("DESCRIBE "+table_name)
+    preexistingKeys = [x[0] for x in cur.fetchall()]
+    for key in currentKeys:
+        print('***************************************')
+        print(key)
+        if key in preexistingKeys:
+            print('***WARNING! KEY ALREADY EXISTED!***')
+        else:
+            print('Now adding '+key)
+            cur.execute("ALTER TABLE " + table_name + " ADD (" +
+                        key + ' ' + currentTable[key]+')')
 
 
-def createdb(arg1):
-    table_names, table_dict = get_tables()
-    create_table(table_names[arg1], table_dict)
+def removeTableFields(table_name, table_dict):
+    currentTable = table_dict[table_name]
+    currentKeys = currentTable.keys()
+
+    ###connect to the database###
+    #retrieve credentials:
+    cmd = 'echo $AeroFSdir'
+    #read in the AeroFSdir string and
+    #chop off the newline character at the end
+    cdir = subprocess.check_output(cmd, shell=True)
+    cdir = cdir[0:len(cdir)-1]
+    credsf = open(cdir+'.credentials/SQL/csaye', 'r')
+    creds = credsf.read().split('\n')
+    conn = pymysql.connect(host=creds[0],
+                           port=int(creds[1]),
+                           user=creds[2],
+                           passwd=creds[3],
+                           db=creds[4])
+    cur = conn.cursor()
+    cur.execute("SHOW TABLES")
+    preExistingTables = cur.fetchall()
+    if (not((table_name,) in preExistingTables)):
+        cur.execute("CREATE TABLE " + table_name +
+                    " (" + currentKeys[0] + " " +
+                    currentTable[currentKeys[0]]+")")
+
+    cur.execute("DESCRIBE "+table_name)
+    preexistingKeys = [x[0] for x in cur.fetchall()]
+    for key in currentKeys:
+        print('***************************************')
+        print(key)
+        if key in preexistingKeys:
+            print('Now removing '+key)
+            cur.execute("ALTER TABLE " + table_name + " DROP " + key)
+        else:
+            print('***WARNING! KEY DID NOT EXIST!***')
+
+
+def createDB():
+    table_names, table_dict = getTables()
+    for tName in table_names:
+        print('===============================')
+        print('Now making ' + tName + ' table.')
+        print('===============================')
+        createTable(tName, table_dict)
+
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        print('')
-        print('python create_chidb.py arg1 arg2')
-        print('')
-        sys.exit(2)
-    elif len(sys.argv) != 3:
+    parser = argparse.ArgumentParser(
+        description='Creates the CHIRON MySQL Database.')
+    parser.add_argument(
+        'tablenum',
+        help='The table number to add. If not specified, ' +
+        'create_chidb will attempt to add all tables.',
+        nargs='?')
+    parser.add_argument(
+        'columnnum',
+        help='The column number to add. If not specified, ' +
+        'create_chidb will attempt to add all columns. ' +
+        '(NOTE: This functionality does not currently work.',
+        nargs='?')
+    if len(sys.argv) > 3:
         print('use the command')
-        print('python filename.py arg1 arg2')
+        print('python filename.py tablenum columnnum')
         sys.exit(2)
 
-    arg1 = int(sys.argv[2])
-    arg2 = str(sys.argv[1])
+    args = parser.parse_args()
+    #arg1 = int(sys.argv[1])
+    #arg2 = int(sys.argv[2])
 
-    createdb(arg1)
+    if len(sys.argv) < 2:
+        createDB()
+    else:
+        table_names, table_dict = getTables()
+        createTable(table_names[args.tablenum], table_dict)
