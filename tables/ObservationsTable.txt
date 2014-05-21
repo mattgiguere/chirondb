@@ -62,3 +62,4 @@ ha, FLOAT
 st, varchar(60)
 zd, FLOAT
 airmass, FLOAT
+rawfilename, varchar(128)

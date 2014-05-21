@@ -9,7 +9,7 @@ tempstru, FLOAT
 tempencl, FLOAT
 tempcoud, FLOAT
 tempinst, FLOAT
-tempiodin, LOAT
+tempiodin, FLOAT
 dewpress, FLOAT
 echpress, FLOAT
 baromete, FLOAT

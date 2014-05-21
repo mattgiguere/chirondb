@@ -10,7 +10,6 @@ import subprocess
 import sys
 import argparse
 import pandas
-import pdb
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
@@ -92,26 +91,11 @@ def getTables():
     return table_names, table_dict
 
 
-def createTable(table_name, table_dict):
+def createTable(table_name, table_dict, cur):
     currentTable = table_dict[table_name]
     currentKeys = currentTable['fieldName']
     currentVarTypes = currentTable['variableType']
 
-    ###connect to the database###
-    #retrieve credentials:
-    cmd = 'echo $AeroFSdir'
-    #read in the AeroFSdir string and
-    #chop off the newline character at the end
-    cdir = subprocess.check_output(cmd, shell=True)
-    cdir = cdir[0:len(cdir)-1]
-    credsf = open(cdir+'.credentials/SQL/csaye', 'r')
-    creds = credsf.read().split('\n')
-    conn = pymysql.connect(host=creds[0],
-                           port=int(creds[1]),
-                           user=creds[2],
-                           passwd=creds[3],
-                           db=creds[4])
-    cur = conn.cursor()
     cur.execute("SHOW TABLES")
     preExistingTables = cur.fetchall()
     if (not((table_name,) in preExistingTables)):
@@ -134,10 +118,7 @@ def createTable(table_name, table_dict):
                         key + ' ' + varType + ')')
 
 
-def removeTableFields(table_name, table_dict):
-    currentTable = table_dict[table_name]
-    currentKeys = currentTable['fieldName']
-
+def connectChironDB():
     ###connect to the database###
     #retrieve credentials:
     cmd = 'echo $AeroFSdir'
@@ -153,6 +134,13 @@ def removeTableFields(table_name, table_dict):
                            passwd=creds[3],
                            db=creds[4])
     cur = conn.cursor()
+    return cur
+
+
+def removeTableFields(table_name, table_dict, cur):
+    currentTable = table_dict[table_name]
+    currentKeys = currentTable['fieldName']
+
     cur.execute("SHOW TABLES")
     preExistingTables = cur.fetchall()
     if (not((table_name,) in preExistingTables)):
@@ -174,12 +162,29 @@ def removeTableFields(table_name, table_dict):
 
 
 def createDB():
+    """This routine creates all tables in the chironDB that do not
+    also exist on exoplanets."""
     table_names, table_dict = getTables()
+    cur = connectChironDB()
     for tName in table_names:
         print('===============================')
         print('Now making ' + tName + ' table.')
         print('===============================')
-        createTable(tName, table_dict)
+        createTable(tName, table_dict, cur)
+
+
+def dropTables():
+    """A routine that will make quick work of dropping all tables
+    if you would like to start from scratch!"""
+    table_names, table_dict = getTables()
+    cur = connectChironDB()
+    cur.execute("SHOW TABLES")
+    preExistingTables = cur.fetchall()
+    for tName in table_names:
+        if ((tName,) in preExistingTables):
+            cur.execute("DROP TABLE " + tName)
+        else:
+            print("***TABLE " + tName + " did not exist!")
 
 
 if __name__ == '__main__':
@@ -209,4 +214,5 @@ if __name__ == '__main__':
         createDB()
     else:
         table_names, table_dict = getTables()
-        createTable(table_names[int(args.tablenum)], table_dict)
+        cur = connectChironDB()
+        createTable(table_names[int(args.tablenum)], table_dict, cur)
