@@ -10,6 +10,7 @@ import subprocess
 import sys
 import argparse
 import pandas
+import pdb
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
@@ -116,7 +117,7 @@ def createTable(table_name, table_dict):
     if (not((table_name,) in preExistingTables)):
         cur.execute("CREATE TABLE " + table_name +
                     " (" + currentKeys[0] + " " +
-                    currentTable[currentKeys[0]]+")")
+                    currentVarTypes[0]+")")
 
     cur.execute("DESCRIBE "+table_name)
     preexistingKeys = [x[0] for x in cur.fetchall()]
@@ -208,4 +209,4 @@ if __name__ == '__main__':
         createDB()
     else:
         table_names, table_dict = getTables()
-        createTable(table_names[args.tablenum], table_dict)
+        createTable(table_names[int(args.tablenum)], table_dict)
