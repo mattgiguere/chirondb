@@ -58,35 +58,18 @@ def getTables():
                    'exposuremeter',
                    'reduction']
 
+    tableFileNames = ['tables/ObservationsTable.txt',
+                      'tables/CCDSectionsTable.txt',
+                      'tables/EnvironmentTable.txt',
+                      'tables/WeatherTable.txt',
+                      'tables/SeeingTable.txt',
+                      'tables/ExposureMeterTable.txt',
+                      'tables/ReductionTable.txt']
+
     table_dict = {}
 
-    #observations table:
-    observationsTable = pandas.read_csv('tables/ObservationsTable.txt')
-    table_dict[table_names[0]] = observationsTable
-
-    #CCD Sections Table
-    ccdSectionsTable = pandas.read_csv('tables/CCDSectionsTable.txt')
-    table_dict[table_names[1]] = ccdSectionsTable
-
-    #Environment Table
-    environmentTable = pandas.read_csv('tables/EnvironmentTable.txt')
-    table_dict[table_names[2]] = environmentTable
-
-    #Weather Table
-    weatherTable = pandas.read_csv('tables/WeatherTable.txt')
-    table_dict[table_names[3]] = weatherTable
-
-    #Seeing Table
-    seeingTable = pandas.read_csv('tables/SeeingTable.txt')
-    table_dict[table_names[4]] = seeingTable
-
-    #Exposure Meter Table
-    exposureMeterTable = pandas.read_csv('tables/ExposureMeterTable.txt')
-    table_dict[table_names[5]] = exposureMeterTable
-
-    #Reduction Table
-    reductionTable = pandas.read_csv('tables/ReductionTable.txt')
-    table_dict[table_names[6]] = reductionTable
+    for idx in range(len(table_names)):
+        table_dict[table_names[idx]] = pandas.read_csv(tableFileNames[idx])
 
     return table_names, table_dict
 
@@ -183,6 +166,7 @@ def dropTables():
     for tName in table_names:
         if ((tName,) in preExistingTables):
             cur.execute("DROP TABLE " + tName)
+            print("DROPPED TABLE " + tName)
         else:
             print("***TABLE " + tName + " did not exist!")
 
