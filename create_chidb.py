@@ -66,16 +66,16 @@ def getTables():
                       'tables/ExposureMeterTable.txt',
                       'tables/ReductionTable.txt']
 
-    table_dict = {}
+    tableDict = {}
 
     for idx in range(len(table_names)):
-        table_dict[table_names[idx]] = pandas.read_csv(tableFileNames[idx])
+        tableDict[table_names[idx]] = pandas.read_csv(tableFileNames[idx])
 
-    return table_names, table_dict
+    return table_names, tableDict
 
 
-def createTable(table_name, table_dict, cur):
-    currentTable = table_dict[table_name]
+def createTable(table_name, tableDict, cur):
+    currentTable = tableDict[table_name]
     currentKeys = currentTable['fieldName']
     currentVarTypes = currentTable['variableType']
 
@@ -120,8 +120,8 @@ def connectChironDB():
     return cur
 
 
-def removeTableFields(table_name, table_dict, cur):
-    currentTable = table_dict[table_name]
+def removeTableFields(table_name, tableDict, cur):
+    currentTable = tableDict[table_name]
     currentKeys = currentTable['fieldName']
 
     cur.execute("SHOW TABLES")
@@ -147,19 +147,19 @@ def removeTableFields(table_name, table_dict, cur):
 def createDB():
     """This routine creates all tables in the chironDB that do not
     also exist on exoplanets."""
-    table_names, table_dict = getTables()
+    table_names, tableDict = getTables()
     cur = connectChironDB()
     for tName in table_names:
         print('===============================')
         print('Now making ' + tName + ' table.')
         print('===============================')
-        createTable(tName, table_dict, cur)
+        createTable(tName, tableDict, cur)
 
 
 def dropTables():
     """A routine that will make quick work of dropping all tables
     if you would like to start from scratch!"""
-    table_names, table_dict = getTables()
+    table_names, tableDict = getTables()
     cur = connectChironDB()
     cur.execute("SHOW TABLES")
     preExistingTables = cur.fetchall()
@@ -197,6 +197,6 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         createDB()
     else:
-        table_names, table_dict = getTables()
+        table_names, tableDict = getTables()
         cur = connectChironDB()
-        createTable(table_names[int(args.tablenum)], table_dict, cur)
+        createTable(table_names[int(args.tablenum)], tableDict, cur)
