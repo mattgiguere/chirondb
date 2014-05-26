@@ -1,7 +1,6 @@
 fitsSourceFile,fitsKeyName,sqlDestTable,sqlColumnName
-raw,fieldName,observations,
-,observation_id,
-raw,object_id,
+,,observations,observation_id
+,,observations,object_id
 raw,simple,observations,simple
 raw,bitpix,observations,bitpix
 raw,naxis,observations,naxis
@@ -63,7 +62,6 @@ raw,ha,observations,ha
 raw,st,observations,st
 raw,zd,observations,zd
 raw,airmass,observations,airmass
-,rawfilename,
 raw,tsec22,ccdsections,tsec22
 raw,asec22,ccdsections,asec22
 raw,csec22,ccdsections,csec22

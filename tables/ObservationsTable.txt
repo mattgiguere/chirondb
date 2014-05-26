@@ -41,7 +41,7 @@ slot03, varchar(60)
 slot04, varchar(60)
 slot07, varchar(60)
 panid, varchar(60)
-comment, varchar(60)
+comment, varchar(256)
 dhsid, varchar(60)
 deckpos, FLOAT
 decker, varchar(60)

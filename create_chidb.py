@@ -50,28 +50,16 @@ def getTables():
     """PURPOSE: To create the CHIRON MySQL database."""
 
     #The new tables in the database:
-    table_names = ['observations',
-                   'ccdsections',
-                   'environment',
-                   'weather',
-                   'seeing',
-                   'exposuremeter',
-                   'reduction']
-
-    tableFileNames = ['tables/ObservationsTable.txt',
-                      'tables/CCDSectionsTable.txt',
-                      'tables/EnvironmentTable.txt',
-                      'tables/WeatherTable.txt',
-                      'tables/SeeingTable.txt',
-                      'tables/ExposureMeterTable.txt',
-                      'tables/ReductionTable.txt']
+    tableFrame = pandas.read_csv('tables/tableList.txt')
+    tableNames = tableFrame['tableName']
+    tableFileNames = tableFrame['tableFileName']
 
     tableDict = {}
 
-    for idx in range(len(table_names)):
-        tableDict[table_names[idx]] = pandas.read_csv(tableFileNames[idx])
+    for idx in range(len(tableNames)):
+        tableDict[tableNames[idx]] = pandas.read_csv(tableFileNames[idx])
 
-    return table_names, tableDict
+    return tableNames, tableDict
 
 
 def createTable(table_name, tableDict, cur):
