@@ -113,7 +113,11 @@ class chironObject:
                         comment = ''.join(comment)
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = comment
                     else:
-                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitshead[self.mapping.loc[i,'fitsKeyName']]
+                        fitsval = ''
+                        fitsval = str(fitshead[self.mapping.loc[i,'fitsKeyName']])
+                        if fitsval.strip() == '':
+                            fitsval = 'NULL'
+                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitsval
 
     def getReducedChironInformation(self):
         """This routine updates the object with all information
@@ -161,11 +165,11 @@ class chironObject:
         cur = conn.cursor()
 
         #first check to make sure the observation isn't already in the database:
-        thisObsId = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
+        thisObsId = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
         cmd = "SELECT observation_id FROM observations WHERE obsid = '"+str(thisObsId).strip()+"'"
         cur.execute(cmd)
         dbEntryLocation = cur.fetchall()
-        if dbEntryLocation != ():
+        if dbEntryLocation == ():
             for tidx in self.tableNames:
                 print('-----------------------------------------')
                 print("TABLE NAME: "+tidx)
