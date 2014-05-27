@@ -121,17 +121,20 @@ class chironObject:
         if self.reducedFileName == '':
             print("You must first enter the reduced filename.")
             return
-        fitshead = getheader(self.reducedFileName, 0)
-        self.tableDict['reduction'].loc[self.tableDict['reduction'].fieldName == 'reducedfilename', 'obsValue'] = self.reducedFileName
-        for i in range(len(self.mapping)):
-            if self.mapping.loc[i,'fitsSourceFile'] == 'reduced':
-                if self.mapping.loc[i,'fitsKeyName'].upper() in fitshead.keys():
-                    currTab = self.tableDict[self.mapping.loc[i,'sqlDestTable']]
-                    idx = currTab[currTab['fieldName'] == self.mapping.loc[i,'sqlColumnName']].index.tolist()
-                    if self.mapping.loc[i,'fitsKeyName'] == 'comment':
-                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = str(fitshead[self.mapping.loc[i,'fitsKeyName']])
-                    else:
-                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitshead[self.mapping.loc[i,'fitsKeyName']]
+        if os.path.exists(self.reducedFileName):
+            fitshead = getheader(self.reducedFileName, 0)
+            self.tableDict['reduction'].loc[self.tableDict['reduction'].fieldName == 'reducedfilename', 'obsValue'] = self.reducedFileName
+            for i in range(len(self.mapping)):
+                if self.mapping.loc[i,'fitsSourceFile'] == 'reduced':
+                    if self.mapping.loc[i,'fitsKeyName'].upper() in fitshead.keys():
+                        currTab = self.tableDict[self.mapping.loc[i,'sqlDestTable']]
+                        idx = currTab[currTab['fieldName'] == self.mapping.loc[i,'sqlColumnName']].index.tolist()
+                        if self.mapping.loc[i,'fitsKeyName'] == 'comment':
+                            self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = str(fitshead[self.mapping.loc[i,'fitsKeyName']])
+                        else:
+                            self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitshead[self.mapping.loc[i,'fitsKeyName']]
+        else:
+            print('Reduced file does not exist. Skipping...')
 
     def connectChironDB(self):
         ###connect to the database###
