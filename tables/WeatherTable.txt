@@ -1,6 +1,5 @@
 fieldName,variableType
 observation_id, INT
-wthr_id, INT
 weatime, varchar(60)
 weatimejd, FLOAT
 outtemp, FLOAT

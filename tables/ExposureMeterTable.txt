@@ -1,6 +1,5 @@
 fieldName,variableType
 observation_id, INT
-em_id, INT AUTO_INCREMENT PRIMARY KEY
 emtimopn, varchar(60)
 emtimcls, varchar(60)
 emnumsmp, INT

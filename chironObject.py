@@ -196,6 +196,14 @@ class chironObject:
                     self.tableDict[tidx].loc[np.where(self.tableDict[tidx].fieldName == 'observation_id')[0][0], 'obsValue'] = newObsId
 
 
+def kapowObservation(rawName):
+    myObs = chironObject()
+    myObs.rawFileName = args.rawName
+    myObs.getRawChironInformation()
+    myObs.setReducedFileName()
+    myObs.getReducedChironInformation()
+    myObs.addToDatabase()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='A method that does a little string manipulation to set' +
@@ -219,9 +227,4 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 2:
         print("KAPOW!!!")
-        myObs = chironObject()
-        myObs.rawFileName = args.rawName
-        myObs.getRawChironInformation()
-        myObs.setReducedFileName()
-        myObs.getReducedChironInformation()
-        myObs.addToDatabase()
+        kapowObservation(args.rawName)

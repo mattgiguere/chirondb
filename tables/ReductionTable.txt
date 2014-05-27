@@ -1,6 +1,5 @@
 fieldName,variableType
 observation_id, INT
-red_id, INT
 resolutn, FLOAT
 thidnlin, INT
 tharfnam, varchar(60)
