@@ -198,10 +198,11 @@ class chironObject:
 
 def kapowObservation(rawName):
     myObs = chironObject()
-    myObs.rawFileName = args.rawName
+    myObs.rawFileName = rawName
     myObs.getRawChironInformation()
     myObs.setReducedFileName()
-    myObs.getReducedChironInformation()
+    if os.path.exists(myObs.reducedFileName):
+        myObs.getReducedChironInformation()
     myObs.addToDatabase()
 
 if __name__ == '__main__':
