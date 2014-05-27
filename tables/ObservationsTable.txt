@@ -11,7 +11,7 @@ bzero, INT
 bscale, INT
 object, varchar(60)
 observer, varchar(60)
-propid, INT
+propid, varchar(60)
 obsid, varchar(60)
 imagetyp, varchar(60)
 ccdsum, varchar(60)
@@ -28,7 +28,7 @@ texptime, FLOAT
 darktime, FLOAT
 nimages, INT
 dheinf, varchar(60)
-dhefirm, varchar(60)
+dhefirm, varchar(256)
 speedmod, varchar(60)
 geommod, varchar(60)
 pixtime, FLOAT

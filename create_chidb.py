@@ -147,11 +147,11 @@ def createDB():
 def dropTables():
     """A routine that will make quick work of dropping all tables
     if you would like to start from scratch!"""
-    table_names, tableDict = getTables()
+    tableNames, tableDict = getTables()
     cur = connectChironDB()
     cur.execute("SHOW TABLES")
     preExistingTables = cur.fetchall()
-    for tName in table_names:
+    for tName in tableNames:
         if ((tName,) in preExistingTables):
             cur.execute("DROP TABLE " + tName)
             print("DROPPED TABLE " + tName)
