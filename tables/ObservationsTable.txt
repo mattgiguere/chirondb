@@ -58,7 +58,7 @@ obs_ra, varchar(60)
 obs_dec, varchar(60)
 epoch, FLOAT
 alt, FLOAT
-ha, FLOAT
+ha, varchar(60)
 st, varchar(60)
 zd, FLOAT
 airmass, FLOAT
