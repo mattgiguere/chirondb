@@ -40,17 +40,19 @@ def getChironFiles(rootDir, minDate, maxDate):
     dirs = subprocess.check_output(cmd, shell=True)
     print(dirs)
     dirs = dirs.split('\n')
+    dirs = dirs[len(dirs) == 6]
 
     #now cycle through each directory listing the files:
     for cdir in dirs[:-1]:
-        print(int(cdir.split('/')[-1]))
-        if int(cdir.split('/')[-1]) >= minDate and int(cdir.split('/')[-1]) <= maxDate:
-            cmd = "ls -1 "+cdir+'/'
-            rawfiles = subprocess.check_output(cmd, shell=True)
-            rawfiles = rawfiles.split('\n')[:-1]
-            print(rawfiles)
-            for rfile in rawfiles:
-                print("cdbo.kapowObservation("+rfile+")")
+        print(cdir.split('/')[-1])
+        if len(cdir.split('/')[-1]) == 6:
+            if int(cdir.split('/')[-1]) >= minDate and int(cdir.split('/')[-1]) <= maxDate:
+                cmd = "ls -1 "+cdir+'/'
+                rawfiles = subprocess.check_output(cmd, shell=True)
+                rawfiles = rawfiles.split('\n')[:-1]
+                print(rawfiles)
+                for rfile in rawfiles:
+                    print("cdbo.kapowObservation("+rfile+")")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
