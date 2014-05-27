@@ -12,6 +12,7 @@ try:
 except:
     print('You need astropy installed')
     sys.exit(1)
+
 try:
     import pandas as pd
 except:
@@ -131,7 +132,7 @@ class chironObject:
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = str(fitshead[self.mapping.loc[i,'fitsKeyName']])
                     else:
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitshead[self.mapping.loc[i,'fitsKeyName']]
-        
+
     def connectChironDB(self):
         ###connect to the database###
         #retrieve credentials:
@@ -155,45 +156,54 @@ class chironObject:
         this method can be called to add the information to the database."""
         conn = self.connectChironDB()
         cur = conn.cursor()
-        for tidx in self.tableNames:
-            print('-----------------------------------------')
-            print("TABLE NAME: "+tidx)
-            print('-----------------------------------------')
 
-            #make a couple lists to add
-            obsVals = []
-            colNames = []
-            cmd = "INSERT INTO "+tidx+" ("
-            for nidx in range(len(self.tableDict[tidx]['obsValue'])):
-                colNames.append(self.tableDict[tidx].loc[nidx, 'fieldName'])
-                newObsVal = str(self.tableDict[tidx].loc[nidx, 'obsValue'])
-                #add quotes to strings, otherwise MySQL will reject it:
-                varType = self.tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
-                if (varType == 'var'):
-                    newObsVal = "'"+newObsVal+"'"
-                obsVals.append(newObsVal)
+        #first check to make sure the observation isn't already in the database:
+        thisObsId = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
+        cmd = "SELECT observation_id FROM observations WHERE obsid = '"+str(thisObsId).strip()+"'"
+        cur.execute(cmd)
+        dbEntryLocation = cur.fetchall()
+        if dbEntryLocation != ():
+            for tidx in self.tableNames:
+                print('-----------------------------------------')
+                print("TABLE NAME: "+tidx)
+                print('-----------------------------------------')
 
-            #now finish up the command to INSERT the observation:
-            cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
-            print(cmd)
+                #make a couple lists to add
+                obsVals = []
+                colNames = []
+                cmd = "INSERT INTO "+tidx+" ("
+                for nidx in range(len(self.tableDict[tidx]['obsValue'])):
+                    colNames.append(self.tableDict[tidx].loc[nidx, 'fieldName'])
+                    newObsVal = str(self.tableDict[tidx].loc[nidx, 'obsValue'])
+                    #add quotes to strings, otherwise MySQL will reject it:
+                    varType = self.tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
+                    if (varType == 'var'):
+                        newObsVal = "'"+newObsVal+"'"
+                    obsVals.append(newObsVal)
 
-            #execute the command:
-            cur.execute(cmd)
+                #now finish up the command to INSERT the observation:
+                cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
+                print(cmd)
 
-            #and commit the transaction to the database:
-            conn.commit()
+                #execute the command:
+                cur.execute(cmd)
 
-            #Now retrieve the AUTO_INCREMENTED observation_id and update tables
-            #so they can be JOINed later:
-            if tidx == 'observations':
-                obsid = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
-                obscmd = "SELECT observation_id FROM observations WHERE obsid = '" +obsid+"'"
-                cur.execute(obscmd)
-                newObsId = cur.fetchall()[0][0]
-                print(newObsId)
-                for tidx in self.tableNames:
-                    print("Table is: "+tidx)
-                    self.tableDict[tidx].loc[np.where(self.tableDict[tidx].fieldName == 'observation_id')[0][0], 'obsValue'] = newObsId
+                #and commit the transaction to the database:
+                conn.commit()
+
+                #Now retrieve the AUTO_INCREMENTED observation_id and update tables
+                #so they can be JOINed later:
+                if tidx == 'observations':
+                    obsid = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
+                    obscmd = "SELECT observation_id FROM observations WHERE obsid = '" +obsid+"'"
+                    cur.execute(obscmd)
+                    newObsId = cur.fetchall()[0][0]
+                    print(newObsId)
+                    for tidx in self.tableNames:
+                        print("Table is: "+tidx)
+                        self.tableDict[tidx].loc[np.where(self.tableDict[tidx].fieldName == 'observation_id')[0][0], 'obsValue'] = newObsId
+        else:
+            print(thisObsId+' is already in the database! Skipping...')
 
 
 def kapowObservation(rawName):

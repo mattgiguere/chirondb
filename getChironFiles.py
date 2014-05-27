@@ -21,6 +21,11 @@ except ImportError:
     print('You need numpy installed')
     sys.exit(1)
 
+try:
+    from astropy.io.fits import getheader
+except:
+    print('You need astropy installed')
+    sys.exit(1)
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
