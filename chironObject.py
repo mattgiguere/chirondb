@@ -113,11 +113,20 @@ class chironObject:
                         comment = ''.join(comment)
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = comment
                     else:
-                        fitsval = ''
+                        #handles exceptions of missing FITS keys. Inserts NULL values in their place:
                         fitsval = str(fitshead[self.mapping.loc[i,'fitsKeyName']])
                         if fitsval.strip() == '':
                             fitsval = 'NULL'
-                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx, 'obsValue'] = fitsval
+
+                        #handles exceptions of error-ridden FITS headers having non-sensicle
+                        #strings where FLOATs should be:
+                        #print(idx[0])
+                        #print(self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'variableType'])
+                        varType = self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'variableType'].strip()[0:5]
+                        if varType == 'FLOAT' and not valIsNumber(fitsval):
+                            fitsval = 'NULL'
+
+                        self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'obsValue'] = fitsval
 
     def getReducedChironInformation(self):
         """This routine updates the object with all information
@@ -211,6 +220,14 @@ class chironObject:
                         self.tableDict[tidx].loc[np.where(self.tableDict[tidx].fieldName == 'observation_id')[0][0], 'obsValue'] = newObsId
         else:
             print(thisObsId+' is already in the database! Skipping...')
+
+
+def valIsNumber(instring):
+    try:
+        float(instring)
+        return True
+    except:
+        return False
 
 
 def kapowObservation(rawName):
