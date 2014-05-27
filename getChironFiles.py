@@ -57,7 +57,7 @@ if __name__ == '__main__':
         description='To cycle through all CHIRON ' +
         'observations and add them to the database.')
     parser.add_argument(
-        'rawDir',
+        'rootDir',
         help='(Optional) Set this to the root directory to ' +
         'search for FITS files.', nargs='?')
     parser.add_argument(
