@@ -90,7 +90,7 @@ class chironObject:
         if self.rawFileName == '':
             print("You must first enter the raw filename.")
             return
-        fitshead = getheader(self.rawFileName, 0)
+        fitshead = getheader(self.rawFileName, 0, ignore_missing_end=True)
         self.getTables()
         self.getFitsToSql()
         #set the rawfilename for the observations table:
