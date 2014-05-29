@@ -53,12 +53,19 @@ def getChironFiles(rootDir, minDate, maxDate):
             if int(cdir.split('/')[-1]) >= minDate and int(cdir.split('/')[-1]) <= maxDate:
                 print((cdir.split('/')[-1]))
                 cmd = "ls -1 "+cdir+'/chi*.fits'
-                rawfiles = subprocess.check_output(cmd, shell=True)
-                rawfiles = rawfiles.split('\n')[:-1]
-                #print(rawfiles)
-                for rfile in rawfiles:
-                    print("cdbo.kapowObservation("+rfile+")")
-                    cdbo.kapowObservation(rfile)
+                filesreturned = True
+                try:
+                    rawfiles = subprocess.check_output(cmd, shell=True)
+                    
+                except subprocess.CalledProcessError:
+                    print('Nothing useful in that directory. Skipping...')
+                    filesreturned = False
+                if filesreturned:
+                    rawfiles = rawfiles.split('\n')[:-1]
+                    #print(rawfiles)
+                    for rfile in rawfiles:
+                        print("cdbo.kapowObservation("+rfile+")")
+                        cdbo.kapowObservation(rfile)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

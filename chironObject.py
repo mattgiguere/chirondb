@@ -22,7 +22,7 @@ except:
 try:
     import pymysql
 except:
-    print('You need astropy installed')
+    print('You need pymysql installed')
     sys.exit(1)
 
 try:
