@@ -125,6 +125,9 @@ class chironObject:
                         varType = self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'variableType'].strip()[0:5]
                         if varType == 'FLOAT' and not valIsNumber(fitsval):
                             fitsval = 'NULL'
+                        if varType == "varch" and fitsval.count("'"):
+                            fitsval = fitsval.split("'")
+                            fitsval = ''.join(fitsval)
 
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'obsValue'] = fitsval
 
