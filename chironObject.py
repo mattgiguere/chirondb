@@ -154,6 +154,12 @@ class chironObject:
 
     def getVelocityInformation(self):
         """This method will extract all velocity information and add it to the database"""
+        #retrieve data directory:
+        cmd = 'echo $AeroFSdir'
+        rvdir = subprocess.check_output(cmd, shell=True)
+        #chop off the newline character at the end
+        rvdir = rvdir[0:len(rvdir)-1]
+        vstfile = rvdir+'data/CHIRPS/rvs/vst'+hdnum+'.dat'
 
     def connectChironDB(self):
         """connect to the database"""
