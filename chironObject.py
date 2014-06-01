@@ -85,7 +85,7 @@ class chironObject:
         self.mapping = pd.read_csv('tables/table2db.txt')
 
     def getRawChironInformation(self):
-        """This routine updates the object with all information
+        """This method updates the object with all information
            from the raw FITS file."""
         if self.rawFileName == '':
             print("You must first enter the raw filename.")
@@ -152,8 +152,11 @@ class chironObject:
         else:
             print('Reduced file does not exist. Skipping...')
 
+    def getVelocityInformation(self):
+        """This method will extract all velocity information and add it to the database"""
+
     def connectChironDB(self):
-        ###connect to the database###
+        """connect to the database"""
         #retrieve credentials:
         cmd = 'echo $AeroFSdir'
         #read in the AeroFSdir string and
@@ -244,10 +247,8 @@ def kapowObservation(rawName):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='A method that does a little string manipulation to set' +
-        'the reduced filename based on the raw filename. Note:' +
-        'this still requires that the raw filename has been set' +
-        'by the user.')
+        description='An object to gather all information about a CHIRON' +
+        'observation and write it to the database.')
     parser.add_argument(
         'rawName',
         help='The name of the raw FITS file.')
