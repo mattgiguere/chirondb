@@ -7,3 +7,4 @@ seeing,tables/SeeingTable.txt
 exposuremeter,tables/ExposureMeterTable.txt
 reduction,tables/ReductionTable.txt
 velocities,tables/VelocityTable.txt
+psfs,tables/PsfTable.txt
