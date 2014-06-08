@@ -1,0 +1,16 @@
+fieldName,variableType
+observation_id,INT
+obnm,varchar(128)
+iodnm,INT
+bc,FLOAT
+z,FLOAT
+jd,FLOAT
+dewar,INT
+gain,FLOAT
+cts,INT
+mnvel,FLOAT
+mdvel,FLOAT
+med_all,FLOAT
+errvel,FLOAT
+mdchi,FLOAT
+nchunk,INT
