@@ -63,3 +63,4 @@ st, varchar(60)
 zd, FLOAT
 airmass, FLOAT
 rawfilename, varchar(128)
+obnm,varchar(128)

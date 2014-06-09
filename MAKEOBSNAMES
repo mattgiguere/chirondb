@@ -1,0 +1,32 @@
+/*
+MAKEOBSNAMES
+Here is the procedure I made for updating the contents
+of the obnm column
+*/
+
+DROP PROCEDURE IF EXISTS MAKEOBSNAMES;
+USE chirondb;
+DELIMITER ;;
+
+CREATE PROCEDURE MAKEOBSNAMES() 
+BEGIN 
+DECLARE rflnm VARCHAR(256) DEFAULT ''; 
+DECLARE newobnm VARCHAR(128) DEFAULT ''; 
+DECLARE n INT DEFAULT 0; 
+DECLARE i INT DEFAULT 0; 
+SELECT COUNT(*) FROM observations INTO n; 
+SET i=0; 
+WHILE i<=n DO 
+SELECT rawfilename FROM observations WHERE observation_id = i INTO rflnm; 
+SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(rflnm, '/', -1), '.', 2) INTO newobnm; 
+SELECT CONCAT('a',newobnm) INTO newobnm;
+UPDATE observations SET obnm=newobnm WHERE observation_id=i; 
+SET i = i + 1; 
+END WHILE; 
+END;
+;;
+
+DELIMITER ;
+;;
+
+CALL MAKEOBSNAMES;
