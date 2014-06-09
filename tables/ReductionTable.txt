@@ -4,4 +4,4 @@ resolutn, FLOAT
 thidnlin, INT
 tharfnam, varchar(60)
 snrbp5500, FLOAT
-reducedfilename, varchar(128)
+reducedfilename, varchar(256)
