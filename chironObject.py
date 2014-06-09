@@ -5,7 +5,10 @@ Created on 2014-05-26T22:28:19
 """
 
 from __future__ import division, print_function
-import sys, argparse, os, subprocess
+import sys
+import argparse
+import os
+import subprocess
 
 try:
     from astropy.io.fits import getheader

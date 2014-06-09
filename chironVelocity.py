@@ -30,8 +30,42 @@ __version__ = '0.0.1'
 def chironVelocity(fileName, path=''):
     """PURPOSE: To restore a CHIRON velocity structure and add the
                 contents to the database"""
+
+    vstTableNames = ['velocities', 'psfs']
+    vstTableFileNames = ['tables/VelocityTable.txt', 'tables/PsfTable.txt']
+    tableDict = getTables(vstTableNames, vstTableFileNames)
     pdf = idlToPandas(path+fileName)
-    return pdf
+    for row in range(pdf.shape[0]):
+        rowobnm = pdf.OBNM[row]
+
+        #create the command that will retrieve the proper observation
+        #id for adding the observation to the velocity and psf tables
+        cmd = "SELECT observation_id FROM observations WHERE " +
+            "obnm = '" + str(rowobnm) + "'"
+
+        #now connect to the chiron database and get the observation id
+        conn = connectChironDB()
+        cur = conn.cursor()
+        cur.execute(cmd)
+        rowObsId = cur.fetchall()
+
+
+def getTables(tableNames, tableFileNames):
+    """This routine reads in the tables and stores them as
+       pandas dataFrames within a python dictionary."""
+    tableDict = {}
+    for idx in range(len(tableNames)):
+        #print('Now adding table ' + self.tableNames[idx])
+        newTable = pd.read_csv(tableFileNames[idx])
+        #newTable.columns = ['fieldName', 'variableType', 'obsValue']
+        newTable['obsValue'] = 'NULL'
+        tableDict[tableNames[idx]] = newTable
+    return tableDict
+
+
+def getSqlTable(tableName):
+    """This routine will retrieve the fields and 
+    variable types of the table of interest."""
 
 
 def getAeroDir():
@@ -47,10 +81,6 @@ def connectChironDB():
     """connect to the database"""
     #retrieve credentials:
     cmd = 'echo $AeroFSdir'
-    #read in the AeroFSdir string and
-    #chop off the newline character at the end
-    cdir = subprocess.check_output(cmd, shell=True)
-    cdir = cdir[0:len(cdir)-1]
     credsf = open(cdir+'.credentials/SQL/csaye', 'r')
     creds = credsf.read().split('\n')
     conn = pymysql.connect(host=creds[0],
@@ -62,39 +92,42 @@ def connectChironDB():
     return conn
 
 
-def addToDatabase():
+def createInsertCmd():
+    """This routine will create the command needed to add
+    the velocity structure information to the database."""
+    cmd = "INSERT INTO "+tidx+" ("
+    for nidx in range(len(self.tableDict[tidx]['obsValue'])):
+        colNames.append(self.tableDict[tidx].loc[nidx, 'fieldName'])
+        newObsVal = str(self.tableDict[tidx].loc[nidx, 'obsValue'])
+        #add quotes to strings, otherwise MySQL will reject it:
+        varType = self.tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
+        if (varType == 'var'):
+            newObsVal = "'"+newObsVal+"'"
+        obsVals.append(newObsVal)
+
+    #now finish up the command to INSERT the observation:
+    cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
+    print(cmd)
+    return cmd
+
+
+
+def addToDatabase(tableNames, tableDict):
     """After all information has been retrieved from the FITS files
     this method can be called to add the information to the database."""
     conn = connectChironDB()
     cur = conn.cursor()
 
     #first check to make sure the observation isn't already in the database:
-    thisObsId = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
+    thisObnm = tableDict['velocities'].loc[np.where(tableDict['velocities'].fieldName == 'obnm')[0][0], 'obsValue']
     cmd = "SELECT observation_id FROM observations WHERE obsid = '"+str(thisObsId).strip()+"'"
     cur.execute(cmd)
     dbEntryLocation = cur.fetchall()
     if dbEntryLocation == ():
-        for tidx in self.tableNames:
+        for tidx in tableNames:
             print('-----------------------------------------')
             print("TABLE NAME: "+tidx)
             print('-----------------------------------------')
-
-            #make a couple lists to add
-            obsVals = []
-            colNames = []
-            cmd = "INSERT INTO "+tidx+" ("
-            for nidx in range(len(self.tableDict[tidx]['obsValue'])):
-                colNames.append(self.tableDict[tidx].loc[nidx, 'fieldName'])
-                newObsVal = str(self.tableDict[tidx].loc[nidx, 'obsValue'])
-                #add quotes to strings, otherwise MySQL will reject it:
-                varType = self.tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
-                if (varType == 'var'):
-                    newObsVal = "'"+newObsVal+"'"
-                obsVals.append(newObsVal)
-
-            #now finish up the command to INSERT the observation:
-            cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
-            print(cmd)
 
             #execute the command:
             cur.execute(cmd)
