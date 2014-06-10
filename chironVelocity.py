@@ -20,6 +20,12 @@ except:
     print('You need pymysql installed')
     sys.exit(1)
 
+try:
+    import pandas as pd
+except:
+    print('You need pandas installed')
+    sys.exit(1)
+
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
