@@ -41,19 +41,25 @@ def chironVelocity(fileName, path=''):
     vstTableFileNames = ['tables/VelocityTable.txt', 'tables/PsfTable.txt']
     tableDict = getTables(vstTableNames, vstTableFileNames)
     pdf = idlToPandas(path+fileName)
+    #now connect to the chiron database
+    conn = connectChironDB()
+    cur = conn.cursor()
     for row in range(pdf.shape[0]):
         rowobnm = pdf.OBNM[row]
+        obnmlist.append(rowobnm)
 
-        #create the command that will retrieve the proper observation
-        #id for adding the observation to the velocity and psf tables
-        cmd = "SELECT observation_id FROM observations WHERE " +
-            "obnm = '" + str(rowobnm) + "'"
+    #now join all the obnms together in one giant string for the WHERE query clause:
+    obnmstring = "' OR obnm = '".join(obnmlist)
 
-        #now connect to the chiron database and get the observation id
-        conn = connectChironDB()
-        cur = conn.cursor()
-        cur.execute(cmd)
-        rowObsId = cur.fetchall()
+    #create the command that will retrieve the proper observation
+    #id for adding the observation to the velocity and psf tables
+    cmd = "SELECT observation_id FROM observations WHERE obnm = '" + str(obnmstring) + "'"
+
+    #get the observation id
+    cur.execute(cmd)
+    ObsIds = cur.fetchall()
+
+
 
 
 def getTables(tableNames, tableFileNames):
@@ -86,8 +92,8 @@ def getAeroDir():
 def connectChironDB():
     """connect to the database"""
     #retrieve credentials:
-    cmd = 'echo $AeroFSdir'
-    credsf = open(cdir+'.credentials/SQL/csaye', 'r')
+    adir = getAeroDir()
+    credsf = open(adir+'.credentials/SQL/csaye', 'r')
     creds = credsf.read().split('\n')
     conn = pymysql.connect(host=creds[0],
                            port=int(creds[1]),
