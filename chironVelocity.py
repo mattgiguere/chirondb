@@ -48,7 +48,8 @@ def chironVelocity(fileName, path=''):
         rowobnm = pdf.OBNM[row]
         obnmlist.append(rowobnm)
 
-    #now join all the obnms together in one giant string for the WHERE query clause:
+    #now join all the obnms together in one giant string 
+    #for the WHERE query clause:
     obnmstring = "' OR obnm = '".join(obnmlist)
 
     #create the command that will retrieve the proper observation
@@ -59,6 +60,8 @@ def chironVelocity(fileName, path=''):
     cur.execute(cmd)
     ObsIds = cur.fetchall()
 
+    #Now update the velocities and psfs tables to include (or update)
+    #the velocity information:
 
 
 
