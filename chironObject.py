@@ -103,6 +103,8 @@ class chironObject:
                 if self.mapping.loc[i,'fitsKeyName'].upper() in fitshead.keys():
                     currTab = self.tableDict[self.mapping.loc[i,'sqlDestTable']]
                     idx = currTab[currTab['fieldName'] == self.mapping.loc[i,'sqlColumnName']].index.tolist()
+                    #comment fields have caused problems since there
+                    #can be more than 1 and have special characters
                     if self.mapping.loc[i,'fitsKeyName'] == 'comment':
                         #first combine the multiple comments that might be in the FITS header:
                         comment = str(fitshead[self.mapping.loc[i,'fitsKeyName']])

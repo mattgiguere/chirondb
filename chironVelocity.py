@@ -39,30 +39,42 @@ def chironVelocity(fileName, path=''):
 
     vstTableNames = ['velocities', 'psfs']
     vstTableFileNames = ['tables/VelocityTable.txt', 'tables/PsfTable.txt']
+    mappingTableFileName = 'tables/table2db.txt'
     tableDict = getTables(vstTableNames, vstTableFileNames)
     pdf = idlToPandas(path+fileName)
-    #now connect to the chiron database
+
+    getObservationIds(tableDict,pdf)
+
+
+def getObservationIds(tableDict, pdf):
+    """The purpose of this routine is to retrieve the observation_ids
+    from the database for all observations in the VST structures. It
+    will add the observation_ids as a new column in both the velocities
+    and psfs tables."""
+
+    #connect to the chiron database
     conn = connectChironDB()
     cur = conn.cursor()
+
+    #now create a list of the OBNM names (e.g. 'achi140402.1234')
+    obnmlist = []
     for row in range(pdf.shape[0]):
         rowobnm = pdf.OBNM[row]
         obnmlist.append(rowobnm)
 
-    #now join all the obnms together in one giant string 
-    #for the WHERE query clause:
+    #now join all the obnms together in one giant string
+    #for the WHERE query clause. Issuing one giant query
+    #instead of one for each observation reduces run time
+    #by as much as a factor of 10000:
     obnmstring = "' OR obnm = '".join(obnmlist)
 
     #create the command that will retrieve the proper observation
-    #id for adding the observation to the velocity and psf tables
+    #ids for adding the observations to the velocity and psf tables
     cmd = "SELECT observation_id FROM observations WHERE obnm = '" + str(obnmstring) + "'"
 
-    #get the observation id
+    #execute the command and fetch the observation_ids:
     cur.execute(cmd)
     ObsIds = cur.fetchall()
-
-    #Now update the velocities and psfs tables to include (or update)
-    #the velocity information:
-
 
 
 def getTables(tableNames, tableFileNames):
@@ -78,9 +90,11 @@ def getTables(tableNames, tableFileNames):
     return tableDict
 
 
-def getSqlTable(tableName):
-    """This routine will retrieve the fields and 
+def getIdlToSqlMapping(mappingTableFileName):
+    """This routine will retrieve the fields and
     variable types of the table of interest."""
+    mapping = pd.read_csv(mappingTableFileName)
+    return mapping
 
 
 def getAeroDir():
