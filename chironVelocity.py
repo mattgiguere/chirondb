@@ -34,16 +34,86 @@ __version__ = '0.0.1'
 
 
 def chironVelocity(fileName, path=''):
-    """PURPOSE: To restore a CHIRON velocity structure and add the
-                contents to the database"""
+    """PURPOSE: This is the main routine that drives everything.
+    Restore a CHIRON IDL velocity structure save file, restore the
+    instructions on how to map that velocity structure to the SQL
+    database and add the contents to the database."""
 
+    #The two SQL tables that the IDL velocity structure save files
+    #are written to:
     vstTableNames = ['velocities', 'psfs']
+
+    #The text files that store column names and variable
+    #types in the SQL velocity and psf tables:
     vstTableFileNames = ['tables/VelocityTable.txt', 'tables/PsfTable.txt']
+
+    #How tag names in the IDL save structure map
+    #to column names in the SQL tables:
     mappingTableFileName = 'tables/table2db.txt'
+
+    #restore map
+    idlSqlMap = getIdlToSqlMapping(mappingTableFileName)
+
+    #restore the SQL table information to fill before writing to the DB
     tableDict = getTables(vstTableNames, vstTableFileNames)
+
+    #restore the IDL velocity structure save file
     pdf = idlToPandas(path+fileName)
 
-    getObservationIds(tableDict,pdf)
+    #get the observation_id elements from the SQL DB:
+    obsids = getObservationIds(tableDict, pdf)
+
+    #Loop through observations updating tableDict:
+    for idx in range(len(pdf)):
+        pass
+
+    #Junk to get rid of pesky linter lines:
+    obsids += 1
+    idlSqlMap += 1
+
+
+def getIdlToSqlMapping(mappingTableFileName):
+    """This routine will retrieve the fields and
+    variable types of the table of interest."""
+    mapping = pd.read_csv(mappingTableFileName)
+    return mapping
+
+
+def getTables(tableNames, tableFileNames):
+    """This routine reads in the tables and stores them as
+       pandas dataFrames within a python dictionary."""
+    tableDict = {}
+    for idx in range(len(tableNames)):
+        #print('Now adding table ' + self.tableNames[idx])
+        newTable = pd.read_csv(tableFileNames[idx])
+        #newTable.columns = ['fieldName', 'variableType', 'obsValue']
+        newTable['obsValue'] = 'NULL'
+        tableDict[tableNames[idx]] = newTable
+    return tableDict
+
+
+def getAeroDir():
+    cmd = 'echo $AeroFSdir'
+    #read in the AeroFSdir string and
+    adir = subprocess.check_output(cmd, shell=True)
+    #chop off the newline character at the end
+    adir = adir[0:len(adir)-1]
+    return adir
+
+
+def connectChironDB():
+    """connect to the database"""
+    #retrieve credentials:
+    adir = getAeroDir()
+    credsf = open(adir+'.credentials/SQL/csaye', 'r')
+    creds = credsf.read().split('\n')
+    conn = pymysql.connect(host=creds[0],
+                           port=int(creds[1]),
+                           user=creds[2],
+                           passwd=creds[3],
+                           db=creds[4])
+    #cur = conn.cursor()
+    return conn
 
 
 def getObservationIds(tableDict, pdf):
@@ -77,50 +147,6 @@ def getObservationIds(tableDict, pdf):
     ObsIds = cur.fetchall()
 
 
-def getTables(tableNames, tableFileNames):
-    """This routine reads in the tables and stores them as
-       pandas dataFrames within a python dictionary."""
-    tableDict = {}
-    for idx in range(len(tableNames)):
-        #print('Now adding table ' + self.tableNames[idx])
-        newTable = pd.read_csv(tableFileNames[idx])
-        #newTable.columns = ['fieldName', 'variableType', 'obsValue']
-        newTable['obsValue'] = 'NULL'
-        tableDict[tableNames[idx]] = newTable
-    return tableDict
-
-
-def getIdlToSqlMapping(mappingTableFileName):
-    """This routine will retrieve the fields and
-    variable types of the table of interest."""
-    mapping = pd.read_csv(mappingTableFileName)
-    return mapping
-
-
-def getAeroDir():
-    cmd = 'echo $AeroFSdir'
-    #read in the AeroFSdir string and
-    adir = subprocess.check_output(cmd, shell=True)
-    #chop off the newline character at the end
-    adir = adir[0:len(adir)-1]
-    return adir
-
-
-def connectChironDB():
-    """connect to the database"""
-    #retrieve credentials:
-    adir = getAeroDir()
-    credsf = open(adir+'.credentials/SQL/csaye', 'r')
-    creds = credsf.read().split('\n')
-    conn = pymysql.connect(host=creds[0],
-                           port=int(creds[1]),
-                           user=creds[2],
-                           passwd=creds[3],
-                           db=creds[4])
-    #cur = conn.cursor()
-    return conn
-
-
 def createInsertCmd():
     """This routine will create the command needed to add
     the velocity structure information to the database."""
@@ -138,7 +164,6 @@ def createInsertCmd():
     cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
     print(cmd)
     return cmd
-
 
 
 def addToDatabase(tableNames, tableDict):
