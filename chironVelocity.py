@@ -67,8 +67,10 @@ def chironVelocity(fileName, path=''):
     for oidx in range(len(pdf)):
         #first insert the correct observation_id for
         #the current observation in the loop:
-        tableDict['velocities'].observation_id = obsids[oidx]
-        tableDict['psfs'].observation_id = obsids[oidx]
+        tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
+            'observation_id', 'obsValue'] = obsids[oidx][0]
+        tableDict['psfs'].loc[tableDict['psfs']['fieldName'] ==
+            'observation_id', 'obsValue'] = obsids[oidx][0]
 
         #now insert the rest of the values into tableDict
         for idx in range(len(idlSqlMap)):
@@ -90,27 +92,36 @@ def chironVelocity(fileName, path=''):
                     newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][pidx]
                 tableDict[cTbNm].loc[tabloc, 'obsValue'] = newObsVal
 
-        #check to see if the observation already exists in the velocities
-        #and psfs tables. If so, we need to UPDATE the observation instead
-        #of INSERTing a new one.
-        obExists = sqlObsExists(obsids[oidx], 'velocities')
-
-        #now INSERT/UPDATE the line in the velocities table:
-        cmd = createInsertCmd(tableDict, 'velocities', update=obExists,
-                              obsid=obsids[oidx])
-
         #connect to the chiron database
         conn = connectChironDB()
         cur = conn.cursor()
 
+        #check to see if the observation already exists in the velocities
+        #and psfs tables. If so, we need to UPDATE the observation instead
+        #of INSERTing a new one.
+        obExists = sqlObsExists(obsids[oidx][0], 'velocities')
+
+        #now INSERT/UPDATE the line in the velocities table:
+        cmd = createInsertCmd(tableDict, 'velocities', update=obExists,
+                              obsid=obsids[oidx][0])
+
         cur.execute(cmd)
+        conn.commit()
+
+        #now repeat for the psfs table:
+        obExists = sqlObsExists(obsids[oidx][0], 'psfs')
+        cmd = createInsertCmd(tableDict, 'psfs', update=obExists,
+                              obsid=obsids[oidx][0])
+        cur.execute(cmd)
+        conn.commit()
+
 
 def sqlObsExists(obsid, tableName):
     """This routine will check to see if the observation already exists in
     the SQL tables. This is necessary in order to determine if we should
     UPDATE an existing line, or INSERT a new one."""
-    cmd = "SELECT obnm FROM " + tableName
-    cmd += " WHERE observation_id = " + obsids[oidx]
+    cmd = "SELECT * FROM " + tableName
+    cmd += " WHERE observation_id = " + str(obsid)
 
     #connect to the chiron database
     conn = connectChironDB()
@@ -118,7 +129,7 @@ def sqlObsExists(obsid, tableName):
 
     cur.execute(cmd)
     obnms = cur.fetchall()
-    return obnms[0] > 0
+    return len(obnms) > 0
 
 
 def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
@@ -230,50 +241,13 @@ def getObservationIds(tableDict, pdf):
 
     #create the command that will retrieve the proper observation
     #ids for adding the observations to the velocity and psf tables
-    cmd = "SELECT observation_id FROM observations WHERE obnm = '" + str(obnmstring) + "'"
+    cmd = "SELECT observation_id FROM observations WHERE obnm = '"
+    cmd += str(obnmstring) + "'"
 
     #execute the command and fetch the observation_ids:
     cur.execute(cmd)
     obsIds = cur.fetchall()
     return obsIds
-
-
-def addToDatabase(tableNames, tableDict):
-    """After all information has been retrieved from the FITS files
-    this method can be called to add the information to the database."""
-    conn = connectChironDB()
-    cur = conn.cursor()
-
-    #first check to make sure the observation isn't already in the database:
-    thisObnm = tableDict['velocities'].loc[np.where(tableDict['velocities'].fieldName == 'obnm')[0][0], 'obsValue']
-    cmd = "SELECT observation_id FROM observations WHERE obsid = '"+str(thisObsId).strip()+"'"
-    cur.execute(cmd)
-    dbEntryLocation = cur.fetchall()
-    if dbEntryLocation == ():
-        for tidx in tableNames:
-            print('-----------------------------------------')
-            print("TABLE NAME: "+tidx)
-            print('-----------------------------------------')
-
-            #execute the command:
-            cur.execute(cmd)
-
-            #and commit the transaction to the database:
-            conn.commit()
-
-            #Now retrieve the AUTO_INCREMENTED observation_id and update tables
-            #so they can be JOINed later:
-            if tidx == 'observations':
-                obsid = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obsid')[0][0], 'obsValue']
-                obscmd = "SELECT observation_id FROM observations WHERE obsid = '" +obsid+"'"
-                cur.execute(obscmd)
-                newObsId = cur.fetchall()[0][0]
-                print(newObsId)
-                for tidx in self.tableNames:
-                    print("Table is: "+tidx)
-                    self.tableDict[tidx].loc[np.where(self.tableDict[tidx].fieldName == 'observation_id')[0][0], 'obsValue'] = newObsId
-    else:
-        print(thisObsId+' is already in the database! Skipping...')
 
 
 if __name__ == '__main__':
