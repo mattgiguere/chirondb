@@ -1,4 +1,5 @@
 fieldName,variableType
+psf_id,INT AUTO_INCREMENT PRIMARY KEY
 observation_id,INT
 mdpar1,FLOAT
 mdpar2,FLOAT

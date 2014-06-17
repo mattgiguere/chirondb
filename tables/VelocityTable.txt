@@ -1,7 +1,8 @@
 fieldName,variableType
+velocity_id,INT AUTO_INCREMENT PRIMARY KEY
 observation_id,INT
 obnm,varchar(128)
-iodnm,INT
+iodnm,varchar(64)
 bc,FLOAT
 z,FLOAT
 jd,FLOAT
