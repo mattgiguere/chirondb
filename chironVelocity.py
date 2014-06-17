@@ -144,7 +144,8 @@ def getObservationIds(tableDict, pdf):
 
     #execute the command and fetch the observation_ids:
     cur.execute(cmd)
-    ObsIds = cur.fetchall()
+    obsIds = cur.fetchall()
+    return obsIds
 
 
 def createInsertCmd():
