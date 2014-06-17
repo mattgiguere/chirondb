@@ -76,6 +76,9 @@ def chironVelocity(starName, path='', cdir=0):
 
     #Loop through observations updating tableDict:
     for oidx in range(len(pdf)):
+        print("---------------------------------------------------")
+        print("Now on observation "+str(oidx)+" of "+str(len(pdf)))
+        print("---------------------------------------------------")
         #first insert the correct observation_id for
         #the current observation in the loop:
         tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
@@ -97,10 +100,10 @@ def chironVelocity(starName, path='', cdir=0):
                 #it will need to be broken up:
                 if idlSqlMap.arrIndex[idx] > -1:
                     arrIdx = int(idlSqlMap.arrIndex[idx])
-                    fullArr = list(pdf[idlSqlMap.fitsKeyName[idx]][pidx])
+                    fullArr = list(pdf[idlSqlMap.fitsKeyName[idx]][oidx])
                     newObsVal = fullArr[arrIdx]
                 else:
-                    newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][pidx]
+                    newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][oidx]
                 tableDict[cTbNm].loc[tabloc, 'obsValue'] = newObsVal
 
         #connect to the chiron database
@@ -149,6 +152,7 @@ def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
     tblnm = tableName
 
     if update is True:
+        print("This observation already existed in the DB. Now updating it!")
         if obsid < 0:
             print("You need to enter the obsid.")
             return
@@ -162,11 +166,19 @@ def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
             if (varType == 'var'):
                 newObsVal = "'"+newObsVal+"'"
 
-            cmd += " " + colName + "=" + newObsVal
+            if colName != 'velocity_id' and colName != 'psf_id':
+                cmd += " " + colName + "=" + newObsVal + ","
 
-        cmd += " WHERE observation_id="+obsid
+        #remove the last comma and space:
+        cmd = cmd[:-1]
+
+        #now tack on the search criteria:
+        cmd += " WHERE observation_id="+str(obsid)
+        print(cmd)
 
     else:
+        colNames = []
+        obsVals = []
         cmd = "INSERT INTO "+tblnm+" ("
         for nidx in range(len(tableDict[tblnm]['obsValue'])):
             colNames.append(tableDict[tblnm].loc[nidx, 'fieldName'])
