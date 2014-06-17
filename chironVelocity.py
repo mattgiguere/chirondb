@@ -64,13 +64,35 @@ def chironVelocity(fileName, path=''):
     obsids = getObservationIds(tableDict, pdf)
 
     #Loop through observations updating tableDict:
-    for idx in range(len(pdf)):
-        pass
+    for oidx in range(len(pdf)):
+        #first insert the correct observation_id for
+        #the current observation in the loop:
+        tableDict['velocities'].observation_id = obsids[oidx]
+        tableDict['psfs'].observation_id = obsids[oidx]
 
-    #Junk to get rid of pesky linter lines:
-    obsids += 1
-    idlSqlMap += 1
+        #now insert the rest of the values into tableDict
+        for idx in range(len(idlSqlMap)):
+            if idlSqlMap.fitsSourceFile[idx] == 'vst':
+                #current SQL table name to write things to:
+                cTbNm = idlSqlMap.sqlDestTable[idx]
 
+                #location in the table to write the value to
+                colName = idlSqlMap.sqlColumnName[idx]
+                tabloc = np.where(tableDict[cTbNm].fieldName == colName)[0][0]
+
+                #if the IDL structure contains an array
+                #it will need to be broken up:
+                if idlSqlMap.arrIndex[idx] > -1:
+                    arrIdx = int(idlSqlMap.arrIndex[idx])
+                    fullArr = list(pdf[idlSqlMap.fitsKeyName[idx]][pidx])
+                    newObsVal = fullArr[arrIdx]
+                else:
+                    newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][pidx]
+                tableDict[cTbNm].loc[tabloc, 'obsValue'] = newObsVal
+
+        #now that the table is finished, create the SQL command
+        #to write the table to the database:
+        
 
 def getIdlToSqlMapping(mappingTableFileName):
     """This routine will retrieve the fields and
@@ -148,15 +170,16 @@ def getObservationIds(tableDict, pdf):
     return obsIds
 
 
-def createInsertCmd():
+def createInsertCmd(tableDict, tableIndex):
     """This routine will create the command needed to add
     the velocity structure information to the database."""
+    tidx = tableIndex
     cmd = "INSERT INTO "+tidx+" ("
-    for nidx in range(len(self.tableDict[tidx]['obsValue'])):
-        colNames.append(self.tableDict[tidx].loc[nidx, 'fieldName'])
-        newObsVal = str(self.tableDict[tidx].loc[nidx, 'obsValue'])
+    for nidx in range(len(tableDict[tidx]['obsValue'])):
+        colNames.append(tableDict[tidx].loc[nidx, 'fieldName'])
+        newObsVal = str(tableDict[tidx].loc[nidx, 'obsValue'])
         #add quotes to strings, otherwise MySQL will reject it:
-        varType = self.tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
+        varType = tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
         if (varType == 'var'):
             newObsVal = "'"+newObsVal+"'"
         obsVals.append(newObsVal)
