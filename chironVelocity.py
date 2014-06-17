@@ -90,9 +90,77 @@ def chironVelocity(fileName, path=''):
                     newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][pidx]
                 tableDict[cTbNm].loc[tabloc, 'obsValue'] = newObsVal
 
-        #now that the table is finished, create the SQL command
-        #to write the table to the database:
-        
+        #check to see if the observation already exists in the velocities
+        #and psfs tables. If so, we need to UPDATE the observation instead
+        #of INSERTing a new one.
+        obExists = sqlObsExists(obsids[oidx], 'velocities')
+
+        #now INSERT/UPDATE the line in the velocities table:
+        cmd = createInsertCmd(tableDict, 'velocities', update=obExists,
+                              obsid=obsids[oidx])
+
+        #connect to the chiron database
+        conn = connectChironDB()
+        cur = conn.cursor()
+
+        cur.execute(cmd)
+
+def sqlObsExists(obsid, tableName):
+    """This routine will check to see if the observation already exists in
+    the SQL tables. This is necessary in order to determine if we should
+    UPDATE an existing line, or INSERT a new one."""
+    cmd = "SELECT obnm FROM " + tableName
+    cmd += " WHERE observation_id = " + obsids[oidx]
+
+    #connect to the chiron database
+    conn = connectChironDB()
+    cur = conn.cursor()
+
+    cur.execute(cmd)
+    obnms = cur.fetchall()
+    return obnms[0] > 0
+
+
+def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
+    """This routine will create the command needed to INSERT or UPDATE
+    the velocities and psfs tables ."""
+    tblnm = tableName
+
+    if update is True:
+        if obsid < 0:
+            print("You need to enter the obsid.")
+            return
+
+        cmd = "UPDATE " + tblnm + " SET"
+        for nidx in range(len(tableDict[tblnm]['obsValue'])):
+            colName = tableDict[tblnm].loc[nidx, 'fieldName']
+            newObsVal = str(tableDict[tblnm].loc[nidx, 'obsValue'])
+            #add quotes to strings, otherwise MySQL will reject it:
+            varType = tableDict[tblnm].loc[nidx, 'variableType'].strip()[0:3]
+            if (varType == 'var'):
+                newObsVal = "'"+newObsVal+"'"
+
+            cmd += " " + colName + "=" + newObsVal
+
+        cmd += " WHERE observation_id="+obsid
+
+    else:
+        cmd = "INSERT INTO "+tblnm+" ("
+        for nidx in range(len(tableDict[tblnm]['obsValue'])):
+            colNames.append(tableDict[tblnm].loc[nidx, 'fieldName'])
+            newObsVal = str(tableDict[tblnm].loc[nidx, 'obsValue'])
+            #add quotes to strings, otherwise MySQL will reject it:
+            varType = tableDict[tblnm].loc[nidx, 'variableType'].strip()[0:3]
+            if (varType == 'var'):
+                newObsVal = "'"+newObsVal+"'"
+            obsVals.append(newObsVal)
+
+        #now finish up the command to INSERT the observation:
+        cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
+
+    print(cmd)
+    return cmd
+
 
 def getIdlToSqlMapping(mappingTableFileName):
     """This routine will retrieve the fields and
@@ -168,26 +236,6 @@ def getObservationIds(tableDict, pdf):
     cur.execute(cmd)
     obsIds = cur.fetchall()
     return obsIds
-
-
-def createInsertCmd(tableDict, tableIndex):
-    """This routine will create the command needed to add
-    the velocity structure information to the database."""
-    tidx = tableIndex
-    cmd = "INSERT INTO "+tidx+" ("
-    for nidx in range(len(tableDict[tidx]['obsValue'])):
-        colNames.append(tableDict[tidx].loc[nidx, 'fieldName'])
-        newObsVal = str(tableDict[tidx].loc[nidx, 'obsValue'])
-        #add quotes to strings, otherwise MySQL will reject it:
-        varType = tableDict[tidx].loc[nidx, 'variableType'].strip()[0:3]
-        if (varType == 'var'):
-            newObsVal = "'"+newObsVal+"'"
-        obsVals.append(newObsVal)
-
-    #now finish up the command to INSERT the observation:
-    cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
-    print(cmd)
-    return cmd
 
 
 def addToDatabase(tableNames, tableDict):
