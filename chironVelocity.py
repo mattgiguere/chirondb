@@ -7,6 +7,7 @@ Created on 2014-06-08T15:32:27
 from __future__ import division, print_function
 import sys
 import argparse
+import subprocess
 
 try:
     from idlToPandas import *
@@ -24,6 +25,12 @@ try:
     import pandas as pd
 except:
     print('You need pandas installed')
+    sys.exit(1)
+
+try:
+    import numpy as np
+except:
+    print('You need numpy installed')
     sys.exit(1)
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
