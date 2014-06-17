@@ -33,7 +33,7 @@ __status__ = " Development NOT(Prototype or Production)"
 __version__ = '0.0.1'
 
 
-def chironVelocity(fileName, path=''):
+def chironVelocity(starName, path='', cdir=0):
     """PURPOSE: This is the main routine that drives everything.
     Restore a CHIRON IDL velocity structure save file, restore the
     instructions on how to map that velocity structure to the SQL
@@ -58,7 +58,11 @@ def chironVelocity(fileName, path=''):
     tableDict = getTables(vstTableNames, vstTableFileNames)
 
     #restore the IDL velocity structure save file
-    pdf = idlToPandas(path+fileName)
+    if cdir == 1:
+        adir = getAeroDir()
+        path = adir+'data/CHIRPS/rvs/'
+    fullFileName = path+'vst'+starName+'.dat'
+    pdf = idlToPandas(fullFileName)
 
     #get the observation_id elements from the SQL DB:
     obsids = getObservationIds(tableDict, pdf)
@@ -169,7 +173,7 @@ def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
         #now finish up the command to INSERT the observation:
         cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
 
-    print(cmd)
+    #print(cmd)
     return cmd
 
 
@@ -261,12 +265,17 @@ if __name__ == '__main__':
         'path',
         help='[Optional] The path to the file. If not specified' +
              ' it will use the current working directory.',
-             nargs='?')
-    if len(sys.argv) > 3:
+             nargs='?', const='')
+    parser.add_argument(
+        'cdir',
+        help='[Optional] If set to 1 this will set' +
+             ' the path to the CHIRPS RV default path.',
+             nargs='?', const=0, type=int)
+    if len(sys.argv) > 4:
         print('use the command')
-        print('python chironVelocity.py fileName path')
+        print('python chironVelocity.py fileName path cdir')
         sys.exit(2)
 
     args = parser.parse_args()
 
-    chironVelocity(args.starname, args.path)
+    chironVelocity(args.starname, path=args.path, cdir=args.cdir)
