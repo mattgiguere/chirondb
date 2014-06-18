@@ -68,7 +68,7 @@ def chironVelocity(starName, path='', cdir=0):
     if cdir == 1:
         adir = getAeroDir()
         path = adir+'data/CHIRPS/rvs/'
-    fullFileName = path+'vst'+starName+'.dat'
+    fullFileName = path+'vst'+str(starName)+'.dat'
     pdf = idlToPandas(fullFileName)
 
     #get the observation_id elements from the SQL DB:
@@ -106,6 +106,8 @@ def chironVelocity(starName, path='', cdir=0):
                     newObsVal = pdf[idlSqlMap.fitsKeyName[idx]][oidx]
                 tableDict[cTbNm].loc[tabloc, 'obsValue'] = newObsVal
 
+        print("File name: "+tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
+                'obnm', 'obsValue'])
         #connect to the chiron database
         conn = connectChironDB()
         cur = conn.cursor()
@@ -270,6 +272,15 @@ def getObservationIds(tableDict, pdf):
     #execute the command and fetch the observation_ids:
     cur.execute(cmd)
     obsIds = cur.fetchall()
+
+    if len(obsIds) != len(obnmlist):
+        print("The resulting obsIds did not have the same length")
+        print("As the input list of observations.")
+        print("pdf length: "+str(len(pdf)))
+        print("obnm list length: "+str(len(obnmlist)))
+        print("obsids length: "+str(len(obsids)))
+        
+
     return obsIds
 
 
