@@ -279,8 +279,17 @@ def getObservationIds(tableDict, pdf):
         print("pdf length: "+str(len(pdf)))
         print("obnm list length: "+str(len(obnmlist)))
         print("obsids length: "+str(len(obsids)))
-        
-
+        print("Now creating a temporary table to ")
+        cur.execute("CREATE TABLE tempObnms (obnm INT)")
+        obList = '), ('.join(obnmlist)
+        obList = '(' + obList + ')'
+        cmd = "INSERT INTO tempObnms VALUES " + obList
+        print(cmd)
+        cur.execute(cmd)
+        conn.commit()
+        cur.execute("SELECT t.obnm FROM tempObnms as t LEFT JOIN velocities as v ON t.obnm=v.obnm WHERE v.obnm IS NULL")
+        print(cur.fetchall())
+    conn.close()
     return obsIds
 
 
