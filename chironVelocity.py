@@ -287,7 +287,9 @@ def getObservationIds(tableDict, pdf):
         print(cmd)
         cur.execute(cmd)
         conn.commit()
-        cur.execute("SELECT t.obnm FROM tempObnms as t LEFT JOIN velocities as v ON t.obnm=v.obnm WHERE v.obnm IS NULL")
+        cur.execute("SELECT t.obnm from tempobnms as t LEFT JOIN observations as o ON t.obnm=o.obnm WHERE o.obnm IS NULL")
+        print("The observation that was in the input list")
+        print("that is not in the observations table is:")
         print(cur.fetchall())
     conn.close()
     return obsIds
