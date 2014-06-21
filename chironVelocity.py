@@ -254,10 +254,6 @@ def getObservationIds(tableDict, pdf):
 
     #now create a list of the OBNM names (e.g. 'achi140402.1234')
     obnmlist = [rowobnm for rowobnm in pdf.OBNM]
-    #obnmlist = []
-    #for row in range(pdf.shape[0]):
-    #    rowobnm = pdf.OBNM[row]
-    #    obnmlist.append(rowobnm)
 
     #now join all the obnms together in one giant string
     #for the WHERE query clause. Issuing one giant query
@@ -320,5 +316,7 @@ if __name__ == '__main__':
         sys.exit(2)
 
     args = parser.parse_args()
+    ##Example: Type the following at the command line:
+    ##python chironVelocity.py 10700 '' 1
 
     chironVelocity(args.starname, path=args.path, cdir=args.cdir)
