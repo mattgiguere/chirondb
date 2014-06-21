@@ -275,8 +275,9 @@ def getObservationIds(tableDict, pdf):
         print("As the input list of observations.")
         print("pdf length: "+str(len(pdf)))
         print("obnm list length: "+str(len(obnmlist)))
-        print("obsids length: "+str(len(obsids)))
+        print("obsids length: "+str(len(obsIds)))
         print("Now creating a temporary table to ")
+        print("determine which observations are missing")
         cur.execute("DROP TABLE tempobnms")
         cur.execute("CREATE TABLE tempobnms (obnm INT)")
         obList = '), ('.join(obnmlist)
@@ -285,7 +286,9 @@ def getObservationIds(tableDict, pdf):
         print(cmd)
         cur.execute(cmd)
         conn.commit()
-        cur.execute("SELECT t.obnm from tempobnms as t LEFT JOIN observations as o ON t.obnm=o.obnm WHERE o.obnm IS NULL")
+        tempTblCmd = "SELECT t.obnm from tempobnms as t LEFT JOIN observations"
+        tempTblCmd += " as o ON t.obnm=o.obnm WHERE o.obnm IS NULL"
+        cur.execute(tempTblCmd)
         print("The observation that was in the input list")
         print("that is not in the observations table is:")
         print(cur.fetchall())
