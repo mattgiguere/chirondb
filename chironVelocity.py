@@ -253,10 +253,11 @@ def getObservationIds(tableDict, pdf):
     cur = conn.cursor()
 
     #now create a list of the OBNM names (e.g. 'achi140402.1234')
-    obnmlist = []
-    for row in range(pdf.shape[0]):
-        rowobnm = pdf.OBNM[row]
-        obnmlist.append(rowobnm)
+    obnmlist = [rowobnm for rowobnm in pdf.OBNM]
+    #obnmlist = []
+    #for row in range(pdf.shape[0]):
+    #    rowobnm = pdf.OBNM[row]
+    #    obnmlist.append(rowobnm)
 
     #now join all the obnms together in one giant string
     #for the WHERE query clause. Issuing one giant query
@@ -280,7 +281,8 @@ def getObservationIds(tableDict, pdf):
         print("obnm list length: "+str(len(obnmlist)))
         print("obsids length: "+str(len(obsids)))
         print("Now creating a temporary table to ")
-        cur.execute("CREATE TABLE tempObnms (obnm INT)")
+        cur.execute("DROP TABLE tempobnms")
+        cur.execute("CREATE TABLE tempobnms (obnm INT)")
         obList = '), ('.join(obnmlist)
         obList = '(' + obList + ')'
         cmd = "INSERT INTO tempObnms VALUES " + obList
