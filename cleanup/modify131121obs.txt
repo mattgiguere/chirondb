@@ -1,0 +1,10 @@
+UPDATE observations SET rawfilename ='/raw/mir7/131121/chi131121.1273.fits' WHERE rawfilename='/raw/mir7/131120/chi131120.1273.fits';
+UPDATE observations SET rawfilename ='/raw/mir7/131121/chi131121.1274.fits' WHERE rawfilename='/raw/mir7/131120/chi131120.1274.fits';
+UPDATE observations SET rawfilename ='/raw/mir7/131121/chi131121.1275.fits' WHERE rawfilename='/raw/mir7/131120/chi131120.1275.fits';
+UPDATE observations SET rawfilename ='/raw/mir7/131121/chi131121.1276.fits' WHERE rawfilename='/raw/mir7/131120/chi131120.1276.fits';
+
+
+UPDATE observations SET obnm='achi131121.1273' WHERE obnm='achi131120.1273';
+UPDATE observations SET obnm='achi131121.1274' WHERE obnm='achi131120.1274';
+UPDATE observations SET obnm='achi131121.1275' WHERE obnm='achi131120.1275';
+UPDATE observations SET obnm='achi131121.1276' WHERE obnm='achi131120.1276';
