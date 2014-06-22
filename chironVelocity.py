@@ -176,7 +176,7 @@ def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
 
         #now tack on the search criteria:
         cmd += " WHERE observation_id="+str(obsid)
-        print(cmd)
+        #print(cmd)
 
     else:
         colNames = []
@@ -194,7 +194,7 @@ def createInsertCmd(tableDict, tableName, update=False, obsid=-1):
         #now finish up the command to INSERT the observation:
         cmd += ", ".join(colNames) + ") VALUES (" + ", ".join(obsVals)+")"
 
-    #print(cmd)
+    print(cmd)
     return cmd
 
 
@@ -279,10 +279,10 @@ def getObservationIds(tableDict, pdf):
         print("Now creating a temporary table to ")
         print("determine which observations are missing")
         cur.execute("DROP TABLE tempobnms")
-        cur.execute("CREATE TABLE tempobnms (obnm INT)")
-        obList = '), ('.join(obnmlist)
-        obList = '(' + obList + ')'
-        cmd = "INSERT INTO tempObnms VALUES " + obList
+        cur.execute("CREATE TABLE tempobnms (obnm varchar(64))")
+        obList = "'),('".join(obnmlist)
+        obList = "('" + obList + "')"
+        cmd = "INSERT INTO tempobnms VALUES " + obList
         print(cmd)
         cur.execute(cmd)
         conn.commit()
@@ -292,6 +292,8 @@ def getObservationIds(tableDict, pdf):
         print("The observation that was in the input list")
         print("that is not in the observations table is:")
         print(cur.fetchall())
+        conn.close()
+        sys.exit(1)
     conn.close()
     return obsIds
 
