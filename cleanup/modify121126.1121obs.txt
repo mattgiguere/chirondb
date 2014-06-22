@@ -1,0 +1,24 @@
+//There was a glitch where the same obsid was used for two observations. 
+//The first one was junk and was renamed junk.
+mysql> select obnm, rawfilename from observations where obsid='ct15m.chiron.20121127.061027';
++-----------------+--------------------------------------+
+| obnm            | rawfilename                          |
++-----------------+--------------------------------------+
+| achi121126.1120 | /raw/mir7/121126/chi121126.1120.fits |
++-----------------+--------------------------------------+
+1 row in set (0.43 sec)
+
+mysql> DELETE FROM observations WHERE obsid = 'ct15m.chiron.20121127.061027';
+Query OK, 1 row affected (0.62 sec)
+
+mysql> select obnm, rawfilename from observations where obsid='ct15m.chiron.20121127.061027';
++------+--------------------------------------+
+| obnm | rawfilename                          |
++------+--------------------------------------+
+| NULL | /raw/mir7/121126/chi121126.1121.fits |
++------+--------------------------------------+
+1 row in set (0.43 sec)
+
+mysql> UPDATE observations SET obnm='achi121126.1121' WHERE obsid='ct15m.chiron.20121127.061027';
+Query OK, 1 row affected (0.59 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
