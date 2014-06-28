@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <style> /* set the CSS */
 
-body { font: 12px Arial;}
+body { font: 16px Arial;}
 
 path { 
     stroke: steelblue;
@@ -47,6 +47,7 @@ var yAxis = d3.svg.axis().scale(y)
 
 // Define the line
 var valueline = d3.svg.line()
+    .interpolate("basis")
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
     
