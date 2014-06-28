@@ -18,6 +18,10 @@ path {
     shape-rendering: crispEdges;
 }
 
+.area {
+    fill: lightsteelblue;
+    -webkit-text-stroke-width: 0;
+}
 </style>
 <body>
 
@@ -51,6 +55,13 @@ var valueline = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
     
+//Now fill in the area:
+var area = d3.svg.area()
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.close); });
+
+
 // Adds the svg canvas
 var svg = d3.select("body")
     .append("svg")
@@ -70,6 +81,12 @@ d3.csv("data.csv", function(error, data) {
     // Scale the range of the data
     x.domain(d3.extent(data, function(d) { return d.date; }));
     y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+    //shading between the curve and the x-axis:
+    svg.append("path")
+        .datum(data)
+        .attr("class", "area")
+        .attr("d", area);
 
     // Add the valueline path.
     svg.append("path")
