@@ -4,8 +4,8 @@ Here is the procedure I made for updating the contents
 of the obnm column
 */
 
-DROP PROCEDURE IF EXISTS MAKEOBSNAMES;
 USE chirondb;
+DROP PROCEDURE IF EXISTS MAKEOBSNAMES;
 DELIMITER ;;
 
 CREATE PROCEDURE MAKEOBSNAMES() 
