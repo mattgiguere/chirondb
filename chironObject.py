@@ -98,6 +98,7 @@ class chironObject:
         self.getFitsToSql()
         #set the rawfilename for the observations table:
         self.tableDict['observations'].loc[self.tableDict['observations'].fieldName == 'rawfilename', 'obsValue'] = self.rawFileName
+        self.tableDict['observations'].loc[self.tableDict['observations'].fieldName == 'obnm', 'obsValue'] = 'a' + self.rawFileName[17:32]
         for i in range(len(self.mapping)):
             if self.mapping.loc[i,'fitsSourceFile'] == 'raw':
                 if self.mapping.loc[i,'fitsKeyName'].upper() in fitshead.keys():
