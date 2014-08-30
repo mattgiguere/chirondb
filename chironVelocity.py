@@ -278,7 +278,13 @@ def getObservationIds(tableDict, pdf):
         print("obsids length: "+str(len(obsIds)))
         print("Now creating a temporary table to ")
         print("determine which observations are missing")
-        cur.execute("DROP TABLE tempobnms")
+        temptabxsts = cur.execute("SHOW TABLES LIKE 'tempobnms'")
+        if temptabxsts:
+            print("tempobnms already exists. Now dropping it before proceeding.")
+            cur.execute("DROP TABLE tempobnms")
+        else:
+            print("tempobnms does not exist. Now creating it.")
+
         cur.execute("CREATE TABLE tempobnms (obnm varchar(64))")
         obList = "'),('".join(obnmlist)
         obList = "('" + obList + "')"
