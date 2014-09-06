@@ -55,11 +55,15 @@ telescop, varchar(60)
 date_obs, varchar(60)
 ut, varchar(60)
 obs_ra, varchar(60)
+obs_ra_decdeg, FLOAT
 obs_dec, varchar(60)
+obs_dec_decdeg, FLOAT
 epoch, FLOAT
 alt, FLOAT
 ha, varchar(60)
+ha_decdeg, FLOAT
 st, varchar(60)
+st_dechr, FLOAT
 zd, FLOAT
 airmass, FLOAT
 rawfilename, varchar(128)
