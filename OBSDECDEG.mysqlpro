@@ -1,0 +1,27 @@
+/* 
+PURPOSE:
+TO calculate obs_ra_decdeg and obs_dec_decdeg
+from obs_ra and obs_dec, respectively
+*/
+
+DROP PROCEDURE IF EXISTS CREATE_OBS_DECDEG;
+DELIMITER ;;
+
+CREATE PROCEDURE CREATE_OBS_DECDEG()
+
+BEGIN
+DECLARE rastr VARCHAR(24) DEFAULT '';
+DECLARE decstr VARCHAR(24) DEFAULT '';
+DECLARE hastr VARCHAR(24) DEFAULT '';
+DECLARE ststr VARCHAR(24) DEFAULT '';
+
+DECLARE i INT DEFAULT 0;
+DECLARE n INT DEFAULT 0;
+SELECT COUNT(*) FROM observations INTO n;
+SET i=0;
+
+WHILE i<=n DO
+SELECT obs_ra FROM observations WHERE observation_id = i INTO 
+
+USE chirondb;
+
