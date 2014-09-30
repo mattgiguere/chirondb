@@ -14,7 +14,7 @@ DECLARE rflnm VARCHAR(256) DEFAULT '';
 DECLARE newobnm VARCHAR(128) DEFAULT ''; 
 DECLARE n INT DEFAULT 0; 
 DECLARE i INT DEFAULT 0; 
-SELECT COUNT(*) FROM observations INTO n; 
+SELECT MAX(observation_id) INTO n FROM observations; 
 SET i=0; 
 WHILE i<=n DO 
 SELECT rawfilename FROM observations WHERE observation_id = i INTO rflnm; 
