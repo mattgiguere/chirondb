@@ -6,22 +6,36 @@ st_dechr values for all observations already in the database.
 */
 
 USE chirondb;
-DROP PROCEDURE IF EXISTS MAKEOBSNAMES;
+DROP PROCEDURE IF EXISTS MAKEDECDEG;
 DELIMITER ;;
 
-CREATE PROCEDURE MAKEOBSNAMES() 
+CREATE PROCEDURE MAKEDECDEG() 
 BEGIN 
 DECLARE rflnm VARCHAR(256) DEFAULT ''; 
 DECLARE newobnm VARCHAR(128) DEFAULT ''; 
+
+DECLARE ora VARCHAR(32) DEFAULT ''; 
+DECLARE odec VARCHAR(32) DEFAULT ''; 
+DECLARE oha VARCHAR(32) DEFAULT ''; 
+DECLARE ost VARCHAR(32) DEFAULT ''; 
+
+DECLARE oradd DOUBLE DEFAULT 0;
+
 DECLARE n INT DEFAULT 0; 
 DECLARE i INT DEFAULT 0; 
-SELECT COUNT(*) FROM observations INTO n; 
+SELECT MAX(observation_id) INTO n FROM observations; 
+SET n=200;
 SET i=0; 
 WHILE i<=n DO 
-SELECT rawfilename FROM observations WHERE observation_id = i INTO rflnm; 
-SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(rflnm, '/', -1), '.', 2) INTO newobnm; 
-SELECT CONCAT('a',newobnm) INTO newobnm;
-UPDATE observations SET obnm=newobnm WHERE observation_id=i; 
+SELECT obs_ra, obs_dec, ha, st INTO ora, odec, oha, ost FROM observations WHERE observation_id = i; 
+
+/* calculate obs_ra_decdeg */
+SELECT 15.*(SUBSTR(ora, 1, 2) + SUBSTR(ora, 4, 2)/60. + SUBSTR(ora, 7, 5)/3600.) INTO oradd;
+UPDATE observations SET obs_ra_decdeg=oradd WHERE observation_id=i;
+
+/* calculate obs_dec_decdeg */
+
+
 SET i = i + 1; 
 END WHILE; 
 END;
@@ -30,4 +44,4 @@ END;
 DELIMITER ;
 ;;
 
-CALL MAKEOBSNAMES;
+CALL MAKEDECDEG;
