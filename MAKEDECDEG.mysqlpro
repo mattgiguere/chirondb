@@ -19,7 +19,15 @@ DECLARE odec VARCHAR(32) DEFAULT '';
 DECLARE oha VARCHAR(32) DEFAULT ''; 
 DECLARE ost VARCHAR(32) DEFAULT ''; 
 
+/* the decimal version of the 
+right ascension and declination */
 DECLARE oradd DOUBLE DEFAULT 0;
+DECLARE odecd DOUBLE DEFAULT 0;
+
+/* a variable to store the colon position
+for strings where the number of characters
+before the colon varies (e.g., declination and ha) */
+DECLARE colpos INT DEFAULT 0;
 
 DECLARE n INT DEFAULT 0; 
 DECLARE i INT DEFAULT 0; 
@@ -34,7 +42,8 @@ SELECT 15.*(SUBSTR(ora, 1, 2) + SUBSTR(ora, 4, 2)/60. + SUBSTR(ora, 7, 5)/3600.)
 UPDATE observations SET obs_ra_decdeg=oradd WHERE observation_id=i;
 
 /* calculate obs_dec_decdeg */
-
+SELECT SUBSTRING(obs_dec, 1, LOCATE(':', obs_dec)-1) FROM observations WHERE observation_id=120 INTO odecd;
+IF odecd < 0 THEN SELECT 
 
 SET i = i + 1; 
 END WHILE; 
