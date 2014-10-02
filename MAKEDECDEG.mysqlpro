@@ -42,8 +42,20 @@ SELECT 15.*(SUBSTR(ora, 1, 2) + SUBSTR(ora, 4, 2)/60. + SUBSTR(ora, 7, 5)/3600.)
 UPDATE observations SET obs_ra_decdeg=oradd WHERE observation_id=i;
 
 /* calculate obs_dec_decdeg */
-SELECT SUBSTRING(obs_dec, 1, LOCATE(':', obs_dec)-1) FROM observations WHERE observation_id=120 INTO odecd;
-IF odecd < 0 THEN SELECT 
+SELECT LOCATE(':', obs_dec) INTO colpos FROM observations WHERE observation_id=i;
+SELECT SUBSTRING(obs_dec, 1, colpos - 1) FROM observations WHERE observation_id=i INTO odecd;
+IF odecd < 0 THEN 
+SELECT SUBSTR(odec, 1, colpos - 1) 
+- SUBSTR(odec, colpos + 1, 2)/60. 
+- SUBSTR(odec, colpos + 4, 5)/3600.
+INTO odecd FROM observations WHERE observation_id=i;
+ELSE
+SELECT SUBSTR(odec, 1, colpos - 1) 
++ SUBSTR(odec, colpos + 1, 2)/60. 
++ SUBSTR(odec, colpos + 4, 5)/3600.
+INTO odecd FROM observations WHERE observation_id=i;
+END IF;
+UPDATE observations SET obs_dec_decdeg=odecd WHERE observation_id=i;
 
 SET i = i + 1; 
 END WHILE; 
