@@ -20,10 +20,8 @@ DECLARE odec VARCHAR(32) DEFAULT '';
 DECLARE oha VARCHAR(32) DEFAULT ''; 
 DECLARE ost VARCHAR(32) DEFAULT ''; 
 
-/* the decimal version of the 
-right ascension and declination */
-DECLARE oradd DOUBLE DEFAULT 0;
-DECLARE odecd DOUBLE DEFAULT 0;
+/* the decimal value for each parameter */
+DECLARE decval DOUBLE DEFAULT 0;
 
 /* a variable to store the colon position
 for strings where the number of characters
@@ -39,40 +37,40 @@ WHILE i<=n DO
 SELECT obs_ra, obs_dec, ha, st INTO ora, odec, oha, ost FROM observations WHERE observation_id = i; 
 
 /* calculate obs_ra_decdeg */
-SELECT 15.*(SUBSTR(ora, 1, 2) + SUBSTR(ora, 4, 2)/60. + SUBSTR(ora, 7, 5)/3600.) INTO oradd;
-UPDATE observations SET obs_ra_decdeg=oradd WHERE observation_id=i;
+SELECT 15.*(SUBSTR(ora, 1, 2) + SUBSTR(ora, 4, 2)/60. + SUBSTR(ora, 7, 5)/3600.) INTO decval;
+UPDATE observations SET obs_ra_decdeg=decval WHERE observation_id=i;
 
 /* calculate obs_dec_decdeg */
-SELECT LOCATE(':', obs_dec) INTO colpos FROM observations WHERE observation_id=i;
-SELECT SUBSTRING(obs_dec, 1, colpos - 1) FROM observations WHERE observation_id=i INTO odecd;
-IF odecd < 0 THEN 
+SELECT LOCATE(':', odec) INTO colpos FROM observations WHERE observation_id=i;
+SELECT SUBSTRING(odec, 1, colpos - 1) FROM observations WHERE observation_id=i INTO decval;
+IF decval < 0 THEN 
 SELECT SUBSTR(odec, 1, colpos - 1) 
 - SUBSTR(odec, colpos + 1, 2)/60. 
 - SUBSTR(odec, colpos + 4, 5)/3600.
-INTO odecd FROM observations WHERE observation_id=i;
+INTO decval FROM observations WHERE observation_id=i;
 ELSE
 SELECT SUBSTR(odec, 1, colpos - 1) 
 + SUBSTR(odec, colpos + 1, 2)/60. 
 + SUBSTR(odec, colpos + 4, 5)/3600.
-INTO odecd FROM observations WHERE observation_id=i;
+INTO decval FROM observations WHERE observation_id=i;
 END IF;
-UPDATE observations SET obs_dec_decdeg=odecd WHERE observation_id=i;
+UPDATE observations SET obs_dec_decdeg=decval WHERE observation_id=i;
 
 /*calculate hour angle in decimal degrees */
-SELECT LOCATE(':', ha) INTO colpos FROM observations WHERE observation_id=i;
-SELECT SUBSTRING(ha, 1, colpos - 1) FROM observations WHERE observation_id=i INTO odecd;
-IF odecd < 0 THEN 
-SELECT SUBSTR(odec, 1, colpos - 1) 
-- SUBSTR(odec, colpos + 1, 2)/60. 
-- SUBSTR(odec, colpos + 4, 5)/3600.
-INTO odecd FROM observations WHERE observation_id=i;
+SELECT LOCATE(':', oha) INTO colpos FROM observations WHERE observation_id=i;
+SELECT SUBSTRING(ha, 1, colpos - 1) FROM observations WHERE observation_id=i INTO decval;
+IF decval < 0 THEN 
+SELECT SUBSTR(oha, 1, colpos - 1) 
+- SUBSTR(oha, colpos + 1, 2)/60. 
+- SUBSTR(oha, colpos + 4, 5)/3600.
+INTO decval FROM observations WHERE observation_id=i;
 ELSE
-SELECT SUBSTR(odec, 1, colpos - 1) 
-+ SUBSTR(odec, colpos + 1, 2)/60. 
-+ SUBSTR(odec, colpos + 4, 5)/3600.
-INTO odecd FROM observations WHERE observation_id=i;
+SELECT SUBSTR(oha, 1, colpos - 1) 
++ SUBSTR(oha, colpos + 1, 2)/60. 
++ SUBSTR(oha, colpos + 4, 5)/3600.
+INTO decval FROM observations WHERE observation_id=i;
 END IF;
-UPDATE observations SET obs_dec_decdeg=odecd WHERE observation_id=i;
+UPDATE observations SET ha_decdeg=decval WHERE observation_id=i;
 
 SET i = i + 1; 
 END WHILE; 
