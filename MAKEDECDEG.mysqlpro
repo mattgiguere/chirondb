@@ -31,7 +31,7 @@ DECLARE colpos INT DEFAULT 0;
 DECLARE n INT DEFAULT 0; 
 DECLARE i INT DEFAULT 0; 
 SELECT MAX(observation_id) INTO n FROM observations; 
-SET n=200;
+/*SET n=200; */
 SET i=0; 
 WHILE i<=n DO 
 SELECT obs_ra, obs_dec, ha, st INTO ora, odec, oha, ost FROM observations WHERE observation_id = i; 
@@ -42,7 +42,7 @@ UPDATE observations SET obs_ra_decdeg=decval WHERE observation_id=i;
 
 /* calculate obs_dec_decdeg */
 SELECT LOCATE(':', odec) INTO colpos FROM observations WHERE observation_id=i;
-SELECT SUBSTRING(odec, 1, colpos - 1) FROM observations WHERE observation_id=i INTO decval;
+SELECT SUBSTR(odec, 1, colpos - 1) FROM observations WHERE observation_id=i INTO decval;
 IF decval < 0 THEN 
 SELECT SUBSTR(odec, 1, colpos - 1) 
 - SUBSTR(odec, colpos + 1, 2)/60. 
@@ -71,6 +71,10 @@ SELECT SUBSTR(oha, 1, colpos - 1)
 INTO decval FROM observations WHERE observation_id=i;
 END IF;
 UPDATE observations SET ha_decdeg=decval WHERE observation_id=i;
+
+/*calculate the sidereal time in decimal hours */
+SELECT SUBSTR(ost, 1, 2) + SUBSTR(ost, 4, 2)/60. + SUBSTR(ost, 7, 5)/3600. INTO decval;
+UPDATE observations SET st_dechr=decval WHERE observation_id=i;
 
 SET i = i + 1; 
 END WHILE; 
