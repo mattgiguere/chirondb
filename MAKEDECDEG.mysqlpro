@@ -7,6 +7,7 @@ st_dechr values for all observations already in the database.
 
 USE chirondb;
 DROP PROCEDURE IF EXISTS MAKEDECDEG;
+
 DELIMITER ;;
 
 CREATE PROCEDURE MAKEDECDEG() 
@@ -57,9 +58,26 @@ INTO odecd FROM observations WHERE observation_id=i;
 END IF;
 UPDATE observations SET obs_dec_decdeg=odecd WHERE observation_id=i;
 
+/*calculate hour angle in decimal degrees */
+SELECT LOCATE(':', ha) INTO colpos FROM observations WHERE observation_id=i;
+SELECT SUBSTRING(ha, 1, colpos - 1) FROM observations WHERE observation_id=i INTO odecd;
+IF odecd < 0 THEN 
+SELECT SUBSTR(odec, 1, colpos - 1) 
+- SUBSTR(odec, colpos + 1, 2)/60. 
+- SUBSTR(odec, colpos + 4, 5)/3600.
+INTO odecd FROM observations WHERE observation_id=i;
+ELSE
+SELECT SUBSTR(odec, 1, colpos - 1) 
++ SUBSTR(odec, colpos + 1, 2)/60. 
++ SUBSTR(odec, colpos + 4, 5)/3600.
+INTO odecd FROM observations WHERE observation_id=i;
+END IF;
+UPDATE observations SET obs_dec_decdeg=odecd WHERE observation_id=i;
+
 SET i = i + 1; 
 END WHILE; 
 END;
+
 ;;
 
 DELIMITER ;
