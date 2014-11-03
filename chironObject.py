@@ -136,24 +136,24 @@ class chironObject:
                             fitsval = ''.join(fitsval)
 
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'obsValue'] = fitsval
-        obs_ra = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obs_ra')[0][0], 'obsValue']
+        obs_ra = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_ra')[0][0], 'obsValue']
         obs_ra_decdeg = 15.*(float(obs_ra[0:2]) + float(obs_ra[3:5])/60 + float(obs_ra[6:])/3600)
-        myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obs_ra_decdeg')[0][0], 'obsValue'] = obs_ra_decdeg
-        obs_dec = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obs_dec')[0][0], 'obsValue'].split(':')
+        self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_ra_decdeg')[0][0], 'obsValue'] = obs_ra_decdeg
+        obs_dec = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_dec')[0][0], 'obsValue'].split(':')
         if (float(obs_dec[0]) < 0):
             obs_dec_decdeg = float(obs_dec[0]) - float(obs_dec[1])/60. - float(obs_dec[2])/3600.
         else:
             obs_dec_decdeg = float(obs_dec[0]) + float(obs_dec[1])/60. + float(obs_dec[2])/3600.        
-        myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'obs_dec_decdeg')[0][0], 'obsValue'] = obs_dec_decdeg
-        ha = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'ha')[0][0], 'obsValue'].split(':')
+        self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_dec_decdeg')[0][0], 'obsValue'] = obs_dec_decdeg
+        ha = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'ha')[0][0], 'obsValue'].split(':')
         if (float(ha[0]) < 0):
             ha_decdeg = float(ha[0]) - float(ha[1])/60. - float(ha[2])/3600.
         else:
             ha_decdeg = float(ha[0]) + float(ha[1])/60. + float(ha[2])/3600.
-        myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'ha_decdeg')[0][0], 'obsValue'] = ha_decdeg
-        st = myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'st')[0][0], 'obsValue'].split(':')
+        self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'ha_decdeg')[0][0], 'obsValue'] = ha_decdeg
+        st = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st')[0][0], 'obsValue'].split(':')
         st_dechr = float(st[0]) + float(st[1])/60. + float(st[2])/3600.
-        myObs.tableDict['observations'].loc[np.where(myObs.tableDict['observations'].fieldName == 'st_dechr')[0][0], 'obsValue'] = st_dechr
+        self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st_dechr')[0][0], 'obsValue'] = st_dechr
 
     def getReducedChironInformation(self):
         """This routine updates the object with all information
