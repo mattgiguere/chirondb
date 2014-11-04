@@ -159,7 +159,7 @@ class chironObject:
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'ha_decdeg')[0][0], 'obsValue'] = ha_decdeg
         st = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st')[0][0], 'obsValue'].split(':')
         print('st is: ', st)
-        if st !='NULL':
+        if st[0] !='NULL':
             st_dechr = float(st[0]) + float(st[1])/60. + float(st[2])/3600.
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st_dechr')[0][0], 'obsValue'] = st_dechr
 
