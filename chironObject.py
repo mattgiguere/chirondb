@@ -138,7 +138,7 @@ class chironObject:
                         self.tableDict[self.mapping.loc[i,'sqlDestTable']].loc[idx[0], 'obsValue'] = fitsval
         obs_ra = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_ra')[0][0], 'obsValue']
         print('obs_ra is: ', obs_ra)
-        if (obs_ra != 'NULL' and obs_ra != 'ra':
+        if (obs_ra != 'NULL' and obs_ra != 'ra'):
             obs_ra_decdeg = 15.*(float(obs_ra[0:2]) + float(obs_ra[3:5])/60 + float(obs_ra[6:])/3600)
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_ra_decdeg')[0][0], 'obsValue'] = obs_ra_decdeg
         obs_dec = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_dec')[0][0], 'obsValue'].split(':')
