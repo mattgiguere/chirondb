@@ -150,13 +150,15 @@ class chironObject:
                 obs_dec_decdeg = float(obs_dec[0]) + float(obs_dec[1])/60. + float(obs_dec[2])/3600.        
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'obs_dec_decdeg')[0][0], 'obsValue'] = obs_dec_decdeg
         ha = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'ha')[0][0], 'obsValue'].split(':')
-        if ha != 'NULL':
+        print('ha is: ', ha)
+        if ha[0] != 'NULL':
             if (float(ha[0]) < 0):
                 ha_decdeg = float(ha[0]) - float(ha[1])/60. - float(ha[2])/3600.
             else:
                 ha_decdeg = float(ha[0]) + float(ha[1])/60. + float(ha[2])/3600.
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'ha_decdeg')[0][0], 'obsValue'] = ha_decdeg
         st = self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st')[0][0], 'obsValue'].split(':')
+        print('st is: ', st)
         if st !='NULL':
             st_dechr = float(st[0]) + float(st[1])/60. + float(st[2])/3600.
             self.tableDict['observations'].loc[np.where(self.tableDict['observations'].fieldName == 'st_dechr')[0][0], 'obsValue'] = st_dechr
