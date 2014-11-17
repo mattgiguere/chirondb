@@ -10,16 +10,10 @@ import argparse
 import subprocess
 
 try:
-    import numpy as np
-except ImportError:
-    print('You need numpy installed')
-    sys.exit(1)
-try:
     import pymysql
 except:
     print('You need pymysql installed')
     sys.exit(1)
-
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
@@ -70,7 +64,7 @@ def removeObservation(obsid):
     #restore the list of table names from which
     #this observation_id will be removed
     tableFrame = pd.read_csv('tables/tableList.txt')
-    self.tableNames = tableFrame.tableName
+    tableNames = tableFrame.tableName
 
 
 if __name__ == '__main__':
