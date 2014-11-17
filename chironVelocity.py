@@ -280,7 +280,7 @@ def getObservationIds(tableDict, pdf):
         print("determine which observations are missing")
         temptabxsts = cur.execute("SHOW TABLES LIKE 'tempobnms'")
         if temptabxsts:
-            print("tempobnms already exists. Now dropping it before proceeding.")
+            print("tempobnms already exists. Now dropping before proceeding.")
             cur.execute("DROP TABLE tempobnms")
         else:
             print("tempobnms does not exist. Now creating it.")
@@ -328,6 +328,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     ##Example: Type the following at the command line:
-    ##python chironVelocity.py 10700 '' 1
+    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 1
 
     chironVelocity(args.starname, path=args.path, cdir=args.cdir)
