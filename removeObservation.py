@@ -15,6 +15,12 @@ except:
     print('You need pymysql installed')
     sys.exit(1)
 
+try:
+    import pandas as pd
+except:
+    print('You need pandas installed')
+    sys.exit(1)
+
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
@@ -52,19 +58,28 @@ def removeObservation(obsid):
     #the MySQL command that will retrieve the observation_id
     #of the erroneous entry:
     cmd = "SELECT observation_id FROM observations "
-    cmd += " WHERE obsid = " + str(obsid)
+    cmd += " WHERE obsid = '" + str(obsid) + "'"
 
     #connect to the chiron database
     conn = connectChironDB()
     cur = conn.cursor()
 
     cur.execute(cmd)
-    observation_id = cur.fetchall()
+    ((observation_id,),) = cur.fetchall()
 
     #restore the list of table names from which
     #this observation_id will be removed
     tableFrame = pd.read_csv('tables/tableList.txt')
     tableNames = tableFrame.tableName
+
+    #now cycle through tables deleting all instances
+    #of this observation_id:
+    for i in tableNames:
+        print('DELETE FROM '+i+" WHERE observation_id='"+str(observation_id)+"'")
+        cmd = 'DELETE FROM '+i+" WHERE observation_id='"
+        cmd += str(observation_id)+"'"
+        cur.execute(cmd)
+        conn.commit()
 
 
 if __name__ == '__main__':
@@ -76,7 +91,7 @@ if __name__ == '__main__':
         help='The unique obsid of the observation.')
     if len(sys.argv) > 3:
         print('use the command')
-        print('python removeObservation.py obsid')
+        print("python removeObservation.py 'ct15m.chiron.20141009.061619'")
         sys.exit(2)
 
     args = parser.parse_args()
