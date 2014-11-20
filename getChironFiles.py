@@ -37,11 +37,11 @@ __version__ = '0.0.1'
 def getChironFiles(rootDir, minDate, maxDate):
     """PURPOSE: To cycle through all the CHIRON observations
     and add them to the database. An example of using this is
-    to cd to the chirondb directory and at the command line 
+    to cd to the chirondb directory and at the command line
     type the following:
-    
+
     python getChironFiles.py /raw/mir7/ 140730 140804
-    
+
     where /raw/mir7/ is the root directory containing all the
     raw files, 140730 is the lower bound date and 140804 is the
     upper bound date.
@@ -65,7 +65,7 @@ def getChironFiles(rootDir, minDate, maxDate):
                 filesreturned = True
                 try:
                     rawfiles = subprocess.check_output(cmd, shell=True)
-                    
+
                 except subprocess.CalledProcessError:
                     print('Nothing useful in that directory. Skipping...')
                     filesreturned = False
