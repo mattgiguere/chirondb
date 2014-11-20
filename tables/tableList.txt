@@ -8,4 +8,4 @@ exposuremeter,tables/ExposureMeterTable.txt
 reduction,tables/ReductionTable.txt
 velocities,tables/VelocityTable.txt
 psfs,tables/PsfTable.txt
-halpha, tables/HalphaTable.txt
+halpha,tables/HalphaTable.txt
