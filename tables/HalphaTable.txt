@@ -6,3 +6,4 @@ linecenter, FLOAT
 linewidth, FLOAT
 fitmechanism, varchar(64)
 comment, varchar(256)
+hsrc_obsid, INT
