@@ -9,5 +9,5 @@ determine the H-alpha EW a new column named
 `hrsrc_obsid` was added.
 
 ```SQL
-ALTER TABLE halpha ADD (hrsrc_obsid INT);
+ALTER TABLE halpha ADD (hsrc_obsid INT);
 ```
