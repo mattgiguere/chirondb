@@ -31,3 +31,21 @@ showed that there was a METADATA LOCK error. Some
 searching around to find the root of the cause was
 unsuccessful, and kill all current processes didn't
 fix it either, but restarting SQL did the trick.
+
+** *2014.12.03* **:
+I deleted entries in the `halpha` table that were all
+NULLs. I'm not sure how those entries were added, but
+I suspect it occurs when running `getChironObservation.py`.
+I also modified `driveHalpha.py` to update the hsrc_obsid
+column.
+
+The hsrc_obsids for the entries already in the DB should
+just be equal to their respective `observation_id`s. This
+was easily updated using the SQL statement:
+
+```SQL
+UPDATE halpha SET hsrc_obsid=observation_id WHERE hsrc_obsid IS NULL;
+```
+
+Checking the results of this command shows that it
+behaved as expected!
