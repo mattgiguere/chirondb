@@ -49,3 +49,12 @@ UPDATE halpha SET hsrc_obsid=observation_id WHERE hsrc_obsid IS NULL;
 
 Checking the results of this command shows that it
 behaved as expected!
+
+2014.12.09:
+
+I want to keep track of when entries are added to the
+halpha table. To do so, I added a `datecreated` column:
+
+```SQL
+ALTER TABLE halpha ADD (datecreated DATETIME);
+```
