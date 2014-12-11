@@ -58,3 +58,18 @@ halpha table. To do so, I added a `datecreated` column:
 ```SQL
 ALTER TABLE halpha ADD (datecreated DATETIME);
 ```
+
+2014.12.10:
+
+Added the `spectra` table to store the reduced
+spectra for all the observations:
+
+```SQL
+CREATE TABLE spectra (spec_id INT AUTO_INCREMENT PRIMARY KEY);
+ALTER TABLE spectra ADD (observation_id INT, rawFilename varchar(128), echelleOrder INT);
+ALTER TABLE spectra ADD (wavelength FLOAT, flux FLOAT, normFlux FLOAT, dateAdded DATETIME);
+```
+Its really not necessary to break the table creation
+lines up the way I did, but it was useful for debugging
+that `order` could not be a column name since
+it is a MySQL command.
