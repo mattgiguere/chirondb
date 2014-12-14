@@ -73,3 +73,16 @@ Its really not necessary to break the table creation
 lines up the way I did, but it was useful for debugging
 that `order` could not be a column name since
 it is a MySQL command.
+
+2014.12.14:
+
+I added two more indexes (in addition to the automatic
+ index on spec_id) on the observation_id and
+ rawFilename. These are the two most searched
+ parameters and will greatly speed up searches. I
+ added these indexes using the following command:
+
+ ```SQL
+ ALTER TABLE spectra ADD INDEX (observation_id),
+ ADD INDEX (rawFilename);
+ ```
