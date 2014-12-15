@@ -9,4 +9,4 @@ reduction,tables/ReductionTable.txt
 velocities,tables/VelocityTable.txt
 psfs,tables/PsfTable.txt
 halpha,tables/HalphaTable.txt
-spectra, tables/SpectraTable.txt
+spectra,tables/SpectraTable.txt
