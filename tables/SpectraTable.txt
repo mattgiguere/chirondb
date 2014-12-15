@@ -1,9 +1,9 @@
 fieldName,variableType
 spec_id, INT AUTO_INCREMENT PRIMARY KEY
 observation_id, INT
-rawfilename, varchar(128)
-order, INT
+rawFilename, varchar(128)
+echelleOrder, INT
 wavelength, FLOAT
 flux, FLOAT
-normflux, FLOAT
+normFlux, FLOAT
 dateAdded, DATETIME
