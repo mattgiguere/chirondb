@@ -201,23 +201,26 @@ class storeSpectra:
             print('It took {0} second to complete.'.format(toc - tic))
 
 
+def driveSpectraStoring(minDate, maxDate):
+    specObj = storeSpectra()
+    specObj.minDate = minDate
+    specObj.maxDate = maxDate
+    specObj.driveDateRange()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='argparse object.')
     parser.add_argument(
-        'arg1',
-        help='This argument does something.')
+        'mindate',
+        help='The starting date.')
     parser.add_argument(
-        'arg2',
-        help='This argument does something else. By specifying ' +
-             'the "nargs=>" makes this argument not required.',
-             nargs='?')
+        'maxdate',
+        help='The end date.')
     if len(sys.argv) > 3:
         print('use the command')
-        print('python storeSpectra.py arg1 arg2')
+        print('python storeSpectra.py mindate maxdate')
         sys.exit(2)
 
     args = parser.parse_args()
 
-    storeSpectra(int(args.arg1), args.arg2)
- 
+    driveSpectraStoring(int(args.mindate), int(args.maxdate))
