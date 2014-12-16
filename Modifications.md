@@ -86,3 +86,79 @@ I added two more indexes (in addition to the automatic
  ALTER TABLE spectra ADD INDEX (observation_id),
  ADD INDEX (rawFilename);
  ```
+
+2014.12.16:
+
+There were a few outlier Eps Eri observations that
+I want to inspect the coordinates of. Unfortunately
+the decimal degree coordinates are only in the DB
+going back to early September. I can add the
+remainder of the decimal degree (decdeg)
+coordinates right within MySQL. To test things
+out, I will see if my code recreates the first
+obs_ra_decdeg entry in the DB:
+```SQL
+select obnm, obs_ra_decdeg,
+obs_ra, obs_dec_decdeg, obs_dec
+FROM observations WHERE object='22049' and
+extract(year from date_obs)=2014 and
+obnm='achi140929.1145';
+```
+which returned
+```sh
++-----------------+---------------+-------------+----------------+-------------+
+| obnm            | obs_ra_decdeg | obs_ra      | obs_dec_decdeg | obs_dec     |
++-----------------+---------------+-------------+----------------+-------------+
+| achi140929.1145 |       53.2353 | 03:32:56.48 |       -9.46225 | -09:27:44.1 |
++-----------------+---------------+-------------+----------------+-------------+
+1 row in set (0.02 sec)
+```
+Calculating the decimal degree ra within MySQL:
+```SQL
+UPDATE observations SET obs_ra_decdeg=
+(MID(obs_ra, 1, 2) +
+MID(obs_ra, 4, 2)/60 +
+MID(obs_ra, 7, 5)/3600)*15.
+WHERE object='22049' AND
+obnm='achi140929.1145';
+```
+And then querying for the results again returns
+the same thing:
+```sh
++-----------------+---------------+-------------+----------------+-------------+
+| obnm            | obs_ra_decdeg | obs_ra      | obs_dec_decdeg | obs_dec     |
++-----------------+---------------+-------------+----------------+-------------+
+| achi140929.1145 |       53.2353 | 03:32:56.48 |       -9.46225 | -09:27:44.1 |
++-----------------+---------------+-------------+----------------+-------------+
+1 row in set (0.00 sec)
+```
+
+To add the remainder
+of the `obs_ra_decdeg` values I used the following
+command:
+
+```SQL
+UPDATE observations SET obs_ra_decdeg=
+(MID(obs_ra, 1, 2) +
+MID(obs_ra, 4, 2)/60 +
+MID(obs_ra, 7, 5)/3600)*15.
+WHERE object='22049' AND
+obs_ra_decdeg IS NULL;
+```
+
+And running this on all observations:
+```SQL
+UPDATE observations SET obs_ra_decdeg=
+(MID(obs_ra, 1, 2) +
+MID(obs_ra, 4, 2)/60 +
+MID(obs_ra, 7, 5)/3600)*15.
+WHERE obs_ra IS NOT NULL AND
+obs_ra_decdeg IS NULL;
+```
+
+Results in
+
+```SQL
+Query OK, 251264 rows affected (14.69 sec)
+Rows matched: 251264  Changed: 251264  Warnings: 0
+```
