@@ -94,9 +94,14 @@ I want to inspect the coordinates of. Unfortunately
 the decimal degree coordinates are only in the DB
 going back to early September. I can add the
 remainder of the decimal degree (decdeg)
-coordinates right within MySQL. To test things
-out, I will see if my code recreates the first
-obs_ra_decdeg entry in the DB:
+coordinates right within MySQL. This needs to be
+executed for both the right ascension and the
+declination.
+
+####Right Ascension
+
+To test things out, I will see if my code recreates
+the first `obs_ra_decdeg` entry in the DB:
 ```SQL
 select obnm, obs_ra_decdeg,
 obs_ra, obs_dec_decdeg, obs_dec
@@ -162,3 +167,5 @@ Results in
 Query OK, 251264 rows affected (14.69 sec)
 Rows matched: 251264  Changed: 251264  Warnings: 0
 ```
+
+#####Declination
