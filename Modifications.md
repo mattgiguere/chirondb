@@ -192,3 +192,27 @@ SELECT MID(obs_dec, 1, 2) +
 ```
 
 That works. Now to execute on the full DB:
+
+```SQL
+SELECT MID(obs_dec, 1, 2) +
+       MID(obs_dec, 4, 2)/60. +
+       MID(obs_dec, 7, 5)/3600 AS decdeg
+   FROM observations
+   WHERE SUBSTRING_INDEX(obs_dec, ':', 1)>0 AND
+      obs_dec_decdeg IS NULL;
+```
+
+Resulted in
+
+```SQL
++--------------------+
+| decdeg             |
++--------------------+
+| 11.966638888888887 |
+.
+.
+.
++--------------------+
+31098 rows in set (1.15 sec)
+
+```
