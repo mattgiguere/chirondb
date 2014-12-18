@@ -8,14 +8,14 @@ To help keep track of the observation used to
 determine the H-alpha EW a new column named
 `hsrc_obsid` was added.
 
-```SQL
+```sql
 ALTER TABLE halpha ADD (hrsc_obsid INT);
 ```
 
 and when things crashed and I finally got to the
 root of the problem I fixed my typo:
 
-```SQL
+```sql
 ALTER TABLE halpha DROP (hrsc_obsid INT);
 ALTER TABLE halpha ADD (hsrc_obsid INT);
 ```
@@ -24,7 +24,7 @@ There were some additional issues attempting to
 execute this SQL statement; each attempt resulted
 in my SQL session hanging. Looking into the cause:
 
-```SQL
+```sql
 SHOW FULL PROCESSLIST;
 ```
 showed that there was a METADATA LOCK error. Some
@@ -43,7 +43,7 @@ The hsrc_obsids for the entries already in the DB should
 just be equal to their respective `observation_id`s. This
 was easily updated using the SQL statement:
 
-```SQL
+```sql
 UPDATE halpha SET hsrc_obsid=observation_id WHERE hsrc_obsid IS NULL;
 ```
 
@@ -55,7 +55,7 @@ behaved as expected!
 I want to keep track of when entries are added to the
 halpha table. To do so, I added a `datecreated` column:
 
-```SQL
+```sql
 ALTER TABLE halpha ADD (datecreated DATETIME);
 ```
 
@@ -64,7 +64,7 @@ ALTER TABLE halpha ADD (datecreated DATETIME);
 Added the `spectra` table to store the reduced
 spectra for all the observations:
 
-```SQL
+```sql
 CREATE TABLE spectra (spec_id INT AUTO_INCREMENT PRIMARY KEY);
 ALTER TABLE spectra ADD (observation_id INT, rawFilename varchar(128), echelleOrder INT);
 ALTER TABLE spectra ADD (wavelength FLOAT, flux FLOAT, normFlux FLOAT, dateAdded DATETIME);
@@ -82,7 +82,7 @@ I added two more indexes (in addition to the automatic
  parameters and will greatly speed up searches. I
  added these indexes using the following command:
 
- ```SQL
+ ```sql
  ALTER TABLE spectra ADD INDEX (observation_id),
  ADD INDEX (rawFilename);
  ```
@@ -102,7 +102,7 @@ declination.
 
 To test things out, I will see if my code recreates
 the first `obs_ra_decdeg` entry in the DB:
-```SQL
+```sql
 select obnm, obs_ra_decdeg,
 obs_ra, obs_dec_decdeg, obs_dec
 FROM observations WHERE object='22049' and
@@ -119,7 +119,7 @@ which returned
 1 row in set (0.02 sec)
 ```
 Calculating the decimal degree ra within MySQL:
-```SQL
+```sql
 UPDATE observations SET obs_ra_decdeg=
 (MID(obs_ra, 1, 2) +
 MID(obs_ra, 4, 2)/60 +
@@ -142,7 +142,7 @@ To add the remainder
 of the `obs_ra_decdeg` values I used the following
 command:
 
-```SQL
+```sql
 UPDATE observations SET obs_ra_decdeg=
 (MID(obs_ra, 1, 2) +
 MID(obs_ra, 4, 2)/60 +
@@ -152,7 +152,7 @@ obs_ra_decdeg IS NULL;
 ```
 
 And running this on all observations:
-```SQL
+```sql
 UPDATE observations SET obs_ra_decdeg=
 (MID(obs_ra, 1, 2) +
 MID(obs_ra, 4, 2)/60 +
@@ -163,11 +163,12 @@ obs_ra_decdeg IS NULL;
 
 Results in
 
-```SQL
+```sql
 Query OK, 251264 rows affected (14.69 sec)
 Rows matched: 251264  Changed: 251264  Warnings: 0
 ```
 
+###2014.12.17
 ####Declination
 
 The declination will be slightly trickier since
@@ -181,7 +182,7 @@ To test this out, I have identified a junk
 observation in the northern hemisphere that
 has `obs_dec specified, but not `obs_dec_decdeg`.
 
-```SQL
+```sql
 SELECT MID(obs_dec, 1, 2) +
        MID(obs_dec, 4, 2)/60. +
        MID(obs_dec, 7, 5)/3600 AS decdeg
@@ -193,7 +194,7 @@ SELECT MID(obs_dec, 1, 2) +
 
 That works. Now to execute on the full DB:
 
-```SQL
+```sql
 SELECT MID(obs_dec, 1, 2) +
        MID(obs_dec, 4, 2)/60. +
        MID(obs_dec, 7, 5)/3600 AS decdeg
@@ -204,7 +205,7 @@ SELECT MID(obs_dec, 1, 2) +
 
 Resulted in
 
-```SQL
+```sql
 +--------------------+
 | decdeg             |
 +--------------------+
@@ -214,5 +215,53 @@ Resulted in
 .
 +--------------------+
 31098 rows in set (1.15 sec)
+
+```
+And now to update everything:
+```sql
+UPDATE observations
+SET obs_dec_decdeg =
+   MID(obs_dec, 1, 2) +
+   MID(obs_dec, 4, 2)/60. +
+   MID(obs_dec, 7, 5)/3600
+WHERE SUBSTRING_INDEX(obs_dec, ':', 1)>0 AND
+   obs_dec_decdeg IS NULL;
+```
+which resulted in:
+```sql
+Query OK, 31098 rows affected (3.36 sec)
+Rows matched: 31098  Changed: 31098  Warnings: 0
+
+```
+
+####Updating all negative declinations:
+
+```sql
+SELECT MID(obs_dec, 1, 3),
+       MID(obs_dec, 5, 2),
+       MID(obs_dec, 8, 5),
+       obs_dec, object
+   FROM observations
+   WHERE SUBSTRING_INDEX(obs_dec, ':', 1)<0 AND
+      obs_dec_decdeg IS NULL AND
+      imagetyp='object'
+      LIMIT 5;
+```
+
+That looks good. Now to try the calculation:
+
+```sql
+UPDATE observations
+SET obs_dec_decdeg =
+   MID(obs_dec, 1, 3) -
+   MID(obs_dec, 5, 2)/60. -
+   MID(obs_dec, 8, 5)/3600.
+WHERE SUBSTRING_INDEX(obs_dec, ':', 1)<0 AND
+   obs_dec_decdeg IS NULL;
+```
+which resulted in:
+```sql
+Query OK, 213226 rows affected (9.69 sec)
+Rows matched: 213226  Changed: 213226  Warnings: 0
 
 ```
