@@ -184,8 +184,11 @@ has `obs_dec specified, but not `obs_dec_decdeg`.
 ```SQL
 SELECT MID(obs_dec, 1, 2) +
        MID(obs_dec, 4, 2)/60. +
-       MID(obs_dec, 7, 5)/3600
-   WHERE SUBSTRING_INDEX(obs_dec, ':', 1)> 0 AND
-       obs_dec_decdeg IS NULL AND
-       observation_id = 12955;
+       MID(obs_dec, 7, 5)/3600 AS decdeg
+   FROM observations
+   WHERE SUBSTRING_INDEX(obs_dec, ':', 1)>0 AND
+      obs_dec_decdeg IS NULL AND
+      observation_id = 12955;
 ```
+
+That works. Now to execute on the full DB:
