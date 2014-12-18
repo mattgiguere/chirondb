@@ -168,4 +168,10 @@ Query OK, 251264 rows affected (14.69 sec)
 Rows matched: 251264  Changed: 251264  Warnings: 0
 ```
 
-#####Declination
+####Declination
+
+The declination will be slightly trickier since
+there are both positive and negative values.
+Instead of using the `MID/SUBSTR/SUBSTRING`
+routine, I should extract the contents of the
+obs_dec string using 
