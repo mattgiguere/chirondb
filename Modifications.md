@@ -172,6 +172,20 @@ Rows matched: 251264  Changed: 251264  Warnings: 0
 
 The declination will be slightly trickier since
 there are both positive and negative values.
-Instead of using the `MID/SUBSTR/SUBSTRING`
-routine, I should extract the contents of the
-obs_dec string using 
+In addition to using the `MID/SUBSTR/SUBSTRING`
+routine, I will extract the hemisphere of the
+object (positive or negative) using the
+`SUBSTRING_INDEX` function.
+
+To test this out, I have identified a junk
+observation in the northern hemisphere that
+has `obs_dec specified, but not `obs_dec_decdeg`.
+
+```SQL
+SELECT MID(obs_dec, 1, 2) +
+       MID(obs_dec, 4, 2)/60. +
+       MID(obs_dec, 7, 5)/3600
+   WHERE SUBSTRING_INDEX(obs_dec, ':', 1)> 0 AND
+       obs_dec_decdeg IS NULL AND
+       observation_id = 12955;
+```
