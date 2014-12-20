@@ -7,3 +7,4 @@ wavelength, FLOAT
 flux, FLOAT
 normFlux, FLOAT
 dateAdded, DATETIME
+nightObserved, INT
