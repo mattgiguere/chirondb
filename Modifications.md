@@ -265,3 +265,13 @@ Query OK, 213226 rows affected (9.69 sec)
 Rows matched: 213226  Changed: 213226  Warnings: 0
 
 ```
+
+###2014.12.20
+To quickly determine what records are already in
+the table, I'm going to add an additional column
+`nightObserved` and an index on that column.
+
+```sql
+ALTER TABLE spectra ADD COLUMN nightObserved INT,
+ADD INDEX (nightObserved);
+```
