@@ -276,6 +276,7 @@ index on that column.
 ALTER TABLE spectra ADD COLUMN nightObserved INT,
 ADD INDEX (nightObserved);
 ```
+
 ###2014.12.21
 This failed with the error
 
@@ -334,3 +335,9 @@ and
 
 Both options showed that the tmpdir has indeed
 been updated to point to `/tous/tmp`.
+
+I then reran the command:
+```sql
+ALTER TABLE spectra ADD COLUMN nightObserved INT,
+ADD INDEX (nightObserved);
+```
