@@ -310,3 +310,27 @@ and then added the line
 ```sh
 tmpdir /tous/tmp
 ```
+The MySQL server was then restarted. After this
+modification the GUI interface in System
+Preferences no longer works, but the MySQL
+server can still be started via the command
+line:
+
+```sh
+/usr/local/mysql/bin/mysqld
+```
+And then checking to make sure `tmpdir` has
+indeed been updated, I ran the commands:
+
+```sh
+/usr/local/bin/mysql/bin/mysqld --verbose --help
+```
+
+and
+
+```sh
+/usr/local/bin/mysql/bin/mysqladmin variables
+```
+
+Both options showed that the tmpdir has indeed
+been updated to point to `/tous/tmp`.
