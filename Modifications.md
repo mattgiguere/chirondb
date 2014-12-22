@@ -276,3 +276,37 @@ index on that column.
 ALTER TABLE spectra ADD COLUMN nightObserved INT,
 ADD INDEX (nightObserved);
 ```
+###2014.12.21
+This failed with the error
+
+```sql
+ERROR 1878 (HY000): Temporary file write failure.
+```
+
+I searched around and this is due to a lack a
+free space. Behind the scenes MySQL creates
+a copy of the table being ALTERed. Since the
+spectra table lives on another drive and the
+size of the table exceeds the size of the
+internal drive of the server, it can no
+longer ALTER the table.
+
+I got around this by changing the `tmp` directory
+for the database to the external drive where
+the database is stored, `tous`. I first
+attempted to do this following MySQL's
+[directions](http://dev.mysql.com/doc/refman/5.0/en/temporary-files.html)
+of modifying my path, but that didn't work.
+Instead, I modified the `my.cnf` file:
+
+```sh
+which mysql
+mysql: 	 aliased to /usr/local/mysql/bin/mysql
+cd /usr/local/mysql
+sudo emacs my.cnf
+```
+
+and then added the line
+```sh
+tmpdir /tous/tmp
+```
