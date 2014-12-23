@@ -341,3 +341,22 @@ I then reran the command:
 ALTER TABLE spectra ADD COLUMN nightObserved INT,
 ADD INDEX (nightObserved);
 ```
+
+###2014.12.23
+This finally finished:
+
+```sql
+mysql> ALTER TABLE spectra ADD COLUMN nightObserved INT,
+    -> ADD INDEX (nightObserved);
+Query OK, 0 rows affected (1 day 13 hours 23 min 0.25 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql>
+```
+
+To fill in all the `nightObserved` rows, the following
+statement was executed:
+
+```sql
+UPDATE spectra SET nightObserved=MID(rawFilename, 11, 6) WHERE nightObserved IS NULL;
+```
