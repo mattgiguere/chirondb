@@ -360,3 +360,28 @@ statement was executed:
 ```sql
 UPDATE spectra SET nightObserved=MID(rawFilename, 11, 6) WHERE nightObserved IS NULL;
 ```
+
+###2015.01.03
+There are a few temporary tables that I'd like to clean up.
+These are
+
+- \#Tableau_sid_00032...
+- tempObsIds
+- tempobnms
+
+To remove them permanently I'll use the command
+
+```sql
+DROP TABLE table_name
+```
+
+MySQL didn't like the Tableau table; my guess is because
+of the # out front. A workaround is including ` marks
+on either side of the name:
+
+```sql
+DROP TABLE `#Tableau_sid_00032...`;
+```
+
+and that worked. I dropped the other two temp tables
+without the need for the tick characters.
