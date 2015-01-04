@@ -406,3 +406,11 @@ I created the file `tableListFull.txt` that contains
  `tableListFull.txt` will be used both for reference,
  and also by a new routine that will delete
  observations from a given night and re-add them.
+
+###2015.01.04
+
+I created an IPython notebook, called
+`deleteNights.ipynb`, which describes
+the code to delete all rows from
+all tables that contain observation
+information for a given night.
