@@ -410,7 +410,19 @@ I created the file `tableListFull.txt` that contains
 ###2015.01.04
 
 I created an IPython notebook, called
-`deleteNights.ipynb`, which describes
-the code to delete all rows from
-all tables that contain observation
-information for a given night.
+`deleteNights.ipynb`, which describes the code to
+delete all rows from all tables that contain
+observation information for a given night.
+
+To test out `deleteNights`, I used a test
+query:
+
+```sql
+SELET COUNT(*) FROM table_name
+WHERE observation_id in
+(SELECT observation_id FROM observations
+  WHERE MID(rawfilename, 11, 6)='140725');
+```
+
+This is query is contained in a FOR loop that
+cycles over the table_names.
