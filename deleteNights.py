@@ -27,7 +27,7 @@ __status__ = " Development NOT(Prototype or Production)"
 __version__ = '0.0.1'
 
 
-def deleteNights(night, test=True):
+def deleteNights(night, execute=False):
     """
     PURPOSE: To delete all rows from all tables that contain
     information from the night of interest.
@@ -38,9 +38,10 @@ def deleteNights(night, test=True):
 
     Optional Input:
     ---------------
-    test: If set as True, the code will execute a SELECT COUNT(*)
+    execute: If set as False, the code will execute a SELECT COUNT(*)
     and print the number of rows in each table instead of
-    executing the DELETE statement. Set T
+    executing the DELETE statement. Set to True to actually
+    DELETE the rows in all tables for the night.
 
     """
 
@@ -54,7 +55,7 @@ def deleteNights(night, test=True):
     for i in range(len(tbls)):
         iname = tbls.loc[i, 'tableName']
         if iname != 'observations' and iname != 'spectra':
-            if test is True:
+            if execute is False:
                 cmd = 'SELECT COUNT(*) FROM '+iname
                 print('Table name is {0}'.format(iname))
             else:
@@ -76,16 +77,16 @@ if __name__ == '__main__':
         help='This argument specifies which night to delete. ' +
              'Needs to be in yymmdd format.')
     parser.add_argument(
-        'test',
-        help='The test argument specifies whether or not the code should ' +
-             'just be tested. Default is True. Set to False to execute ' +
+        '-e', '--execute', action="store_true",
+        help='The execute argument specifies whether or not the code should ' +
+             'just be tested. Default is False. Set to True to execute ' +
              'the DELETE command.',
              nargs='?')
     if len(sys.argv) > 3:
         print('use the command')
-        print('python deleteNights.py night test=False')
+        print('python deleteNights.py night --execute')
         sys.exit(2)
 
     args = parser.parse_args()
 
-    deleteNights(str(args.night), test=args.test)
+    deleteNights(str(args.night), execute=args.execute)
