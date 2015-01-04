@@ -426,3 +426,21 @@ WHERE observation_id in
 
 This is query is contained in a FOR loop that
 cycles over the table_names.
+
+That returned the expected result for all tables.
+Now to `DELETE` all rows:
+
+```sql
+DELETE FROM table_name
+WHERE observation_id in
+(SELECT observation_id FROM observations
+  WHERE MID(rawfilename, 11, 6)='140725');
+```
+
+That returned a `None` value for each table. I then
+reran the test code, which returned zeroes for each
+table, demonstrating that the DELETE code in fact
+worked. I also executed the test code (SELECT
+  COUNT(*)) on the night of `140726` to make sure
+I didn't accidentally delete more than just the
+night of interest. Thankfully, I did not.
