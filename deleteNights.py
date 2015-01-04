@@ -43,6 +43,10 @@ def deleteNights(night, execute=False):
     executing the DELETE statement. Set to True to actually
     DELETE the rows in all tables for the night.
 
+    Example:
+    --------
+    python deleteNights.py 140725 --execute
+
     """
 
     #read in the table names to delete all entries from:
@@ -68,6 +72,24 @@ def deleteNights(night, execute=False):
             counts = cur.fetchall()
             print(counts)
 
+            #commit the changes to the database:
+            conn.commit()
+
+    #lastly, delete from the observations table:
+    if execute is False:
+        cmd = 'SELECT COUNT(*) FROM observations '
+        print('Table name is observations')
+    else:
+        cmd = 'DELETE FROM observations '
+    cmd += "WHERE MID(rawfilename, 11, 6)='"+night+"';"
+    #print(cmd)
+    cur.execute(cmd)
+    counts = cur.fetchall()
+    print(counts)
+
+    #commit the changes to the database:
+    conn.commit()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -80,13 +102,14 @@ if __name__ == '__main__':
         '-e', '--execute', action="store_true",
         help='The execute argument specifies whether or not the code should ' +
              'just be tested. Default is False. Set to True to execute ' +
-             'the DELETE command.',
-             nargs='?')
+             'the DELETE command.')
     if len(sys.argv) > 3:
         print('use the command')
         print('python deleteNights.py night --execute')
         sys.exit(2)
 
     args = parser.parse_args()
+    print('args.execute is ')
+    print(args.execute)
 
     deleteNights(str(args.night), execute=args.execute)
