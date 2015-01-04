@@ -402,4 +402,7 @@ I created the file `tableListFull.txt` that contains
  that file is used to determine which tables are
  appended to when running `getChironFiles.py`. Since
  I do not want rows full of `NULL` values, these
- two tables are not listed in `tableList.txt`. 
+ two tables are not listed in `tableList.txt`.
+ `tableListFull.txt` will be used both for reference,
+ and also by a new routine that will delete
+ observations from a given night and re-add them.
