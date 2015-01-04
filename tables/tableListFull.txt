@@ -1,0 +1,12 @@
+tableName,tableFileName
+ccdsections,tables/CCDSectionsTable.txt
+environment,tables/EnvironmentTable.txt
+exposuremeter,tables/ExposureMeterTable.txt
+halpha,tables/HalphaTable.txt
+observations,tables/ObservationsTable.txt
+psfs,tables/PsfTable.txt
+reduction,tables/ReductionTable.txt
+seeing,tables/SeeingTable.txt
+spectra,tables/SpectraTable.txt
+velocities,tables/VelocityTable.txt
+weather,tables/WeatherTable.txt
