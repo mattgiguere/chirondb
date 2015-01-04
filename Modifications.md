@@ -385,3 +385,21 @@ DROP TABLE `#Tableau_sid_00032...`;
 
 and that worked. I dropped the other two temp tables
 without the need for the tick characters.
+
+I also need to remove and readd observations in
+ the DB from the night of 140725. Observations
+ from that night were added, and the
+filenames were later changed. This has caused
+problems when using the database to query for
+observations, and then restoring the FITS files
+for analysis.
+
+I created the file `tableListFull.txt` that contains
+ the names of all tables that were affected by this.
+ Currently, `tableListFull.txt` is everything in
+ `tableList.txt` plus `halpha` and `spectra`. These
+ tables are not included in `tableList.txt` because
+ that file is used to determine which tables are
+ appended to when running `getChironFiles.py`. Since
+ I do not want rows full of `NULL` values, these
+ two tables are not listed in `tableList.txt`. 
