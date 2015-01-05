@@ -116,9 +116,18 @@ class storeSpectra:
             return conn
 
         def getObservationId(self):
-            """Retrieve the observation_id. This will be written to the
-            database and also used to make sure the file hasn't already
+            """PURPOSE: To retrieve the observation_id. This will be written
+            to the database and also used to make sure the file hasn't already
             been written to the DB."""
+            conn = self.connectChironDB()
+            cmd = 'SELECT observation_id FROM observations '
+            cmd += "WHERE rawfilename='"+self.rawfilename+"';"
+            cur = conn.cursor()
+            obsexists = cur.execute(cmd)
+            if obsexists:
+                self.observation_id = cur.fetchall()[0][0]
+            else:
+                self.observation_id = None
 
 
         def makeSpecDF(self):
@@ -127,14 +136,14 @@ class storeSpectra:
             rawfilename = self.getRawFileName()
             scidata = self.readSpectrum()
             #retrieve the observation_id for this observation:
-            obs_id = self.getObservationId()
+            self.getObservationId()
 
             #create an empty dataframe to house the whole spec:
             onespecdf = pd.DataFrame()
             #Now cycle through the orders writing them to the DB
             for i in range(scidata.shape[0]):
                 order = pd.DataFrame({'spec_id': None,
-                                      'observation_id': obs_id,
+                                      'observation_id': self.observation_id,
                                       'rawFilename': rawfilename,
                                       'echelleOrder': i,
                                       'wavelength': scidata[i, :, 0],
@@ -185,9 +194,15 @@ class storeSpectra:
                 fullFile += '/a'+rfile
                 print('Now on File: {}'.format(fullFile))
                 if os.path.isfile(fullFile):
-                    self.makeSpecDF()
-                    self.writeSpectrum()
-                    self.specdf = pd.DataFrame()
+                    self.getRawFileName()
+                    self.getObservationId()
+                    if self.observation_id is not None:
+                        self.makeSpecDF()
+                        self.writeSpectrum()
+                        self.specdf = pd.DataFrame()
+                    else:
+                        print('{} is already in the DB! Now skipping.'
+                              .format(self.rawfilename))
                 else:
                     print('File {0} did not exist!'.format(fullFile))
 
