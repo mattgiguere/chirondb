@@ -1,5 +1,5 @@
 fieldName,variableType
-spec_id, INT AUTO_INCREMENT PRIMARY KEY
+spec_id, BIGINT AUTO_INCREMENT PRIMARY KEY
 observation_id, INT
 rawFilename, varchar(128)
 echelleOrder, INT
