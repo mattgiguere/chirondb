@@ -131,6 +131,7 @@ class storeSpectra:
                 self.observation_id = cur.fetchall()[0][0]
             else:
                 self.observation_id = None
+            conn.close()
 
 
         def makeSpecDF(self):
@@ -184,6 +185,22 @@ class storeSpectra:
                 self.specdf.to_sql('spectra', conn, flavor='mysql',
                                    if_exists='append', index=False)
             conn.close()
+
+        def obsInSpectra(self):
+            """PURPOSE: To use the rawfilename to check and see
+            if the spectrum is already in the database."""
+            self.getRawFileName()
+            conn = self.connectChironDB()
+            cmd = 'SELECT DISTINCT rawFilename FROM spectra '
+            cmd += "WHERE rawFilename='"+self.rawfilename+"';"
+            cur = conn.cursor()
+            obsexists = cur.execute(cmd)
+            if obsexists:
+                return True
+            else:
+                return False
+            conn.close()
+
 
         def driveDay(self, date):
             """PURPOSE: To drive all the files from the input date."""
