@@ -132,7 +132,8 @@ class storeSpectra:
                                       'flux': scidata[i, :, 1],
                                       'normFlux': self.normSpec(scidata[i, :, 0],
                                                                 scidata[i, :, 1]),
-                                      'dateAdded': str(datetime.datetime.now())})
+                                      'dateAdded': str(datetime.datetime.now())},
+                                      'nightObserved': self.thisDate)
                 onespecdf = onespecdf.append(order)
             #replace infinite values with 0:
             onespecdf = onespecdf.replace([np.inf, -np.inf], 0)
@@ -195,6 +196,7 @@ class storeSpectra:
                 thisDate = cdir.split('/')[-1]
                 if len(thisDate) == 6:
                     if int(thisDate) >= self.minDate and int(thisDate) <= self.maxDate:
+                        self.nightObserved = thisDate
                         self.driveDay(thisDate)
 
             toc = time.clock()
