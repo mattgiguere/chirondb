@@ -199,10 +199,11 @@ class storeSpectra:
                 if os.path.isfile(fullFile):
                     self.getRawFileName()
                     self.getObservationId()
-                    if self.observation_id is not None:
-                        self.makeSpecDF()
-                        self.writeSpectrum()
-                        self.specdf = pd.DataFrame()
+                    if self.observation_id is None:
+                        print('observation_id is: {}'.format(self.observation_id))
+                        #self.makeSpecDF()
+                        #self.writeSpectrum()
+                        #self.specdf = pd.DataFrame()
                     else:
                         print('{} is already in the DB! Now skipping.'
                               .format(self.rawfilename))
