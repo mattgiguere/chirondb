@@ -40,6 +40,7 @@ class storeSpectra:
             self.maxDate = ''
             self.reducedRoot = '/tous/mir7/fitspec/'
             self.rawRoot = '/raw/mir7/'
+            self.rawfilename = ''
             self.reducedFileName = ''
             #create an empty dataframe for the spectra:
             self.specdf = pd.DataFrame()
@@ -64,7 +65,8 @@ class storeSpectra:
             #This happens to be the case for CHIRON:
             redFileName = self.reducedFileName
             date = redFileName[4:10]
-            return self.rawRoot+date+'/'+redFileName[1:]
+            self.rawfilename = self.rawRoot+date+'/'+redFileName[1:]
+            return self.rawfilename
 
         def readSpectrum(self):
             """PURPOSE: To read in the spectrum."""
@@ -119,6 +121,7 @@ class storeSpectra:
             """PURPOSE: To retrieve the observation_id. This will be written
             to the database and also used to make sure the file hasn't already
             been written to the DB."""
+            self.getRawFileName()
             conn = self.connectChironDB()
             cmd = 'SELECT observation_id FROM observations '
             cmd += "WHERE rawfilename='"+self.rawfilename+"';"
@@ -150,8 +153,8 @@ class storeSpectra:
                                       'flux': scidata[i, :, 1],
                                       'normFlux': self.normSpec(scidata[i, :, 0],
                                                                 scidata[i, :, 1]),
-                                      'dateAdded': str(datetime.datetime.now())},
-                                      'nightObserved': self.thisDate)
+                                      'dateAdded': str(datetime.datetime.now()),
+                                      'nightObserved': self.nightObserved})
                 onespecdf = onespecdf.append(order)
             #replace infinite values with 0:
             onespecdf = onespecdf.replace([np.inf, -np.inf], 0)
