@@ -465,3 +465,49 @@ ALTER TABLE spectra MODIFY spec_id BIGINT;
 
 I'll now be able to add up to 9 Quadrillion
 rows.
+
+###2015.01.05
+
+####auto incrementing spec_id
+After over 7 hours, the `ALTER TABLE` command
+from yesterday successfully completed:
+
+```sql
+mysql> ALTER TABLE spectra MODIFY spec_id BIGINT;
+Query OK, 2093569024 rows affected (7 hours 35 min 5.18 sec)
+Records: 2093569024  Duplicates: 0  Warnings: 0
+```
+
+The only problem I have now is that it removed
+the auto incrementing extra. Here is the column
+description before:
+
+```sql
+mysql> describe spectra;
++----------------+--------------+------+-----+---------+----------------+
+| Field          | Type         | Null | Key | Default | Extra          |
++----------------+--------------+------+-----+---------+----------------+
+| spec_id        | int(11)      | NO   | PRI | NULL    | auto_increment |
+
+```
+
+And here is the column description after:
+```sql
+mysql> describe spectra;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| spec_id        | bigint(20)   | NO   | PRI | 0       |       |
+```
+
+Now it won't accept a `NULL` value (or pandas `None`)
+and auto increment it to the next spec_id. To
+fix this, I issued the command:
+
+```sql
+ALTER TABLE spectra MODIFY spec_id BIGINT AUTO INCREMENT DEFAULT NULL;
+```
+
+I tested this on a test table and it seems to be
+the correct fix; I'll know in ~7.5 hours whether
+or not it really worked.
