@@ -42,6 +42,7 @@ class storeSpectra:
             self.rawRoot = '/raw/mir7/'
             self.rawfilename = ''
             self.reducedFileName = ''
+            self.observation_id = None
             #create an empty dataframe for the spectra:
             self.specdf = pd.DataFrame()
 
@@ -195,12 +196,12 @@ class storeSpectra:
             cmd += "WHERE rawFilename='"+self.rawfilename+"';"
             cur = conn.cursor()
             obsexists = cur.execute(cmd)
+            print('obsexists is {}'.format(obsexists))
             if obsexists:
                 return True
             else:
                 return False
             conn.close()
-
 
         def driveDay(self, date):
             """PURPOSE: To drive all the files from the input date."""
@@ -215,15 +216,15 @@ class storeSpectra:
                 print('Now on File: {}'.format(fullFile))
                 if os.path.isfile(fullFile):
                     self.getRawFileName()
-                    self.getObservationId()
-                    if self.observation_id is None:
-                        print('observation_id is: {}'.format(self.observation_id))
-                        #self.makeSpecDF()
-                        #self.writeSpectrum()
-                        #self.specdf = pd.DataFrame()
-                    else:
+                    if self.obsInSpectra():
                         print('{} is already in the DB! Now skipping.'
                               .format(self.rawfilename))
+                    else:
+                        print('obs_id is: {}'.format(self.observation_id))
+                        self.makeSpecDF()
+                        self.writeSpectrum()
+                        #clear the contents of specdf:
+                        self.specdf = pd.DataFrame()
                 else:
                     print('File {0} did not exist!'.format(fullFile))
 
