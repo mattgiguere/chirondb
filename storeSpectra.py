@@ -115,17 +115,26 @@ class storeSpectra:
             #cur = conn.cursor()
             return conn
 
+        def getObservationId(self):
+            """Retrieve the observation_id. This will be written to the
+            database and also used to make sure the file hasn't already
+            been written to the DB."""
+
+
         def makeSpecDF(self):
             """PURPOSE: To put the reduced spectrum in a pandas DataFrame"""
             #filename = self.reducedFileName
             rawfilename = self.getRawFileName()
             scidata = self.readSpectrum()
+            #retrieve the observation_id for this observation:
+            obs_id = self.getObservationId()
+
             #create an empty dataframe to house the whole spec:
             onespecdf = pd.DataFrame()
             #Now cycle through the orders writing them to the DB
             for i in range(scidata.shape[0]):
                 order = pd.DataFrame({'spec_id': None,
-                                      'observation_id': None,
+                                      'observation_id': obs_id,
                                       'rawFilename': rawfilename,
                                       'echelleOrder': i,
                                       'wavelength': scidata[i, :, 0],
@@ -162,6 +171,7 @@ class storeSpectra:
             else:
                 self.specdf.to_sql('spectra', conn, flavor='mysql',
                                    if_exists='append', index=False)
+            conn.close()
 
         def driveDay(self, date):
             """PURPOSE: To drive all the files from the input date."""
