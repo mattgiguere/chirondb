@@ -362,6 +362,7 @@ UPDATE spectra SET nightObserved=MID(rawFilename, 11, 6) WHERE nightObserved IS 
 ```
 
 ###2015.01.03
+####drop temp tables
 There are a few temporary tables that I'd like to clean up.
 These are
 
@@ -409,6 +410,7 @@ I created the file `tableListFull.txt` that contains
 
 ###2015.01.04
 
+####delete rows from 140725
 I created an IPython notebook, called
 `deleteNights.ipynb`, which describes the code to
 delete all rows from all tables that contain
@@ -444,3 +446,22 @@ worked. I also executed the test code (SELECT
   COUNT(*)) on the night of `140726` to make sure
 I didn't accidentally delete more than just the
 night of interest. Thankfully, I did not.
+
+####spectra Table
+An instance of `storeSpectra.py` ran into a
+problem over break. The error message was
+
+```sql
+DataError: (1264, u"Out of range value for column 'spec_id' at row 305")
+```
+
+This was due to using a normal `INT` for the
+index data type. The solution was to change
+the data type of spec_id to `BIGINT`:
+
+```sql
+ALTER TABLE spectra MODIFY spec_id BIGINT;
+```
+
+I'll now be able to add up to 9 Quadrillion
+rows.
