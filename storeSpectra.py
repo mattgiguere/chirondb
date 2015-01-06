@@ -196,7 +196,7 @@ class storeSpectra:
             cmd += "WHERE rawFilename='"+self.rawfilename+"';"
             cur = conn.cursor()
             obsexists = cur.execute(cmd)
-            print('obsexists is {}'.format(obsexists))
+            #print('obsexists is {}'.format(obsexists))
             if obsexists:
                 return True
             else:
@@ -220,13 +220,13 @@ class storeSpectra:
                         print('{} is already in the DB! Now skipping.'
                               .format(self.rawfilename))
                     else:
-                        print('obs_id is: {}'.format(self.observation_id))
+                        #print('obs_id is: {}'.format(self.observation_id))
                         self.makeSpecDF()
                         self.writeSpectrum()
                         #clear the contents of specdf:
                         self.specdf = pd.DataFrame()
                 else:
-                    print('File {0} did not exist!'.format(fullFile))
+                    print('This file was not reduced. Skipping...'.format(fullFile))
 
         def driveDateRange(self):
             """PURPOSE: To drive a range of input dates."""
