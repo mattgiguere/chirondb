@@ -97,7 +97,9 @@ class storeSpectra:
             #make a function based on those
             #polynomial coefficients:
             cfit = np.poly1d(z)
-            return normspec/cfit(wavcent)
+            nrmlzd = normspec/cfit(wavcent)
+            #now get rid of nans and infs before returning:
+            return np.nan_to_num(nrmlzd)
 
         @staticmethod
         def connectChironDB():
