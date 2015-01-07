@@ -141,7 +141,7 @@ class storeSpectra:
             """PURPOSE: To put the reduced spectrum in a pandas DataFrame"""
             #filename = self.reducedFileName
             rawfilename = self.getRawFileName()
-            scidata = self.readSpectrum()
+            scidata = np.nan_to_num(self.readSpectrum())
             #retrieve the observation_id for this observation:
             self.getObservationId()
 
