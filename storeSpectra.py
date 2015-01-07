@@ -231,9 +231,12 @@ class storeSpectra:
         def driveDateRange(self):
             """PURPOSE: To drive a range of input dates."""
             #Get all the dates with data:
-            cmd = "ls -1d /tous/mir7/fitspec/1[1-4]*"
+            print('Now getting directories.')
+            cmd = "ls -1d /tous/mir7/fitspec/[1-2][0-9]*"
             dirs = subprocess.check_output(cmd, shell=True)
+            print('Directories retrieved.')
             dirs = dirs.split('\n')
+            print('Directories split.')
             #print('len of dirs: {0}'.format(len(dirs)))
             self.minDate = int(self.minDate)
             self.maxDate = int(self.maxDate)
