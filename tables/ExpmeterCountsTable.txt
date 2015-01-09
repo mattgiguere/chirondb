@@ -2,8 +2,8 @@ fieldName,variableType
 expmcts_id, BIGINT AUTO_INCREMENT PRIMARY KEY
 observation_id, INT
 time, DATETIME
-jdtime, DOUBLE
+mjdtime, DOUBLE
 counts, FLOAT
-original_time, FLOAT
+original_time, FLOAT(11, 6)
 filename, VARCHAR(128)
 dateAdded, TIMESTAMP
