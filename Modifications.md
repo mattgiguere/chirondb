@@ -518,5 +518,13 @@ or not it really worked.
 I added a table to `chirondb` to store the exposure meter counts information, `expmetercounts`. The columns are described in `table/ExpmeterCountsTables.txt`. The command used to add the table was:
 
 ```sql
-CREATE TABLE expmetercounts
+CREATE TABLE expmetercounts (expmcts_id BIGINT AUTO_INCREMENT PRIMARY KEY);
+ALTER TABLE expmetercounts ADD (observation_id INT, time DATETIME, mjdtime DOUBLE, counts FLOAT);
+ALTER TABLE expmetercounts ADD (original_time FLOAT(11,6), filename VARCHAR(128), dateAdded TIMESTAMP);
+```
+
+and then add an index on mjdtime and time:
+
+```sql
+ALTER TABLE expmetercounts ADD INDEX (mjdtime), ADD INDEX (time);
 ```
