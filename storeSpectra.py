@@ -38,6 +38,7 @@ class storeSpectra:
         def __init__(self):
             self.minDate = ''
             self.maxDate = ''
+            self.nightObserved = 0
             self.reducedRoot = '/tous/mir7/fitspec/'
             self.rawRoot = '/raw/mir7/'
             self.rawfilename = ''
@@ -97,9 +98,13 @@ class storeSpectra:
             #make a function based on those
             #polynomial coefficients:
             cfit = np.poly1d(z)
+
             nrmlzd = normspec/cfit(wavcent)
-            #now get rid of nans and infs before returning:
-            return np.nan_to_num(nrmlzd)
+
+            #upperlimits to be in MySQL range:
+            nrmlzd[nrmlzd>1e38] = 1e38
+
+            return nrmlzd
 
         @staticmethod
         def connectChironDB():
@@ -253,6 +258,7 @@ class storeSpectra:
 
             toc = time.clock()
             print('It took {0} second to complete.'.format(toc - tic))
+            print(time.strftime("%a, %d %b %Y %H:%M:%S", time.gmtime()))
 
 
 def driveSpectraStoring(minDate, maxDate):
