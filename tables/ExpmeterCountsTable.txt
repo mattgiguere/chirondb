@@ -1,0 +1,8 @@
+fieldName,variableType
+expmcts_id, BIGINT AUTO_INCREMENT PRIMARY KEY
+observation_id, INT
+time, DATETIME
+counts, FLOAT
+original_time, 
+filename, VARCHAR(128)
+dateAdded, TIMESTAMP
