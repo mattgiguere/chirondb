@@ -50,7 +50,7 @@ def getChironFiles(rootDir, minDate, maxDate):
     if rootDir[-1] != '/':
         rootDir += '/'
 
-    cmd = "ls -1d "+rootDir+"1[1-4]*"
+    cmd = "ls -1d "+rootDir+"[1-2][0-9]*"
     dirs = subprocess.check_output(cmd, shell=True)
     #print(dirs)
     dirs = dirs.split('\n')
