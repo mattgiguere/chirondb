@@ -511,3 +511,12 @@ ALTER TABLE spectra MODIFY spec_id BIGINT AUTO INCREMENT DEFAULT NULL;
 I tested this on a test table and it seems to be
 the correct fix; I'll know in ~7.5 hours whether
 or not it really worked.
+
+###2015.01.09
+
+####expmetercounts Table
+I added a table to `chirondb` to store the exposure meter counts information, `expmetercounts`. The columns are described in `table/ExpmeterCountsTables.txt`. The command used to add the table was:
+
+```sql
+CREATE TABLE expmetercounts
+```
