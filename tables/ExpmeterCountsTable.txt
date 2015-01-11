@@ -4,6 +4,6 @@ observation_id, INT
 time, DATETIME
 mjdtime, DOUBLE
 counts, FLOAT
-original_time, FLOAT(11, 6)
+original_time, FLOAT(12, 6)
 filename, VARCHAR(128)
 dateAdded, TIMESTAMP
