@@ -563,4 +563,4 @@ Query OK, 0 rows affected (0.33 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 ```
 
-and it worked. 
+and it worked. I can now write to the `expmetercounts` table from the `expMeterCounts` notebook.
