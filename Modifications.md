@@ -528,3 +528,12 @@ and then add an index on mjdtime and time:
 ```sql
 ALTER TABLE expmetercounts ADD INDEX (mjdtime), ADD INDEX (time);
 ```
+
+which returned no errors
+
+```sql
+Query OK, 0 rows affected (0.53 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql>
+```
