@@ -174,7 +174,6 @@ class storeSpectra:
             else:
                 self.specdf.to_sql('spectra', engine,
                                    if_exists='append', index=False)
-            engine.close()
 
         def obsInSpectra(self):
             """PURPOSE: To use the rawfilename to check and see
