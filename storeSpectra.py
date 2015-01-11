@@ -258,7 +258,7 @@ class storeSpectra:
 
             toc = time.clock()
             print('It took {0} second to complete.'.format(toc - tic))
-            print(time.strftime("%a, %d %b %Y %H:%M:%S", time.gmtime()))
+            print(time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime()))
 
 
 def driveSpectraStoring(minDate, maxDate):
