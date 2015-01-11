@@ -24,6 +24,7 @@ import os
 import warnings
 from numba import jit, void, int_, double, autojit
 import time
+from pyutil import connectChironDB as ccdb
 
 
 __author__ = "Matt Giguere (github: @mattgiguere)"
@@ -106,31 +107,12 @@ class storeSpectra:
 
             return nrmlzd
 
-        @staticmethod
-        def connectChironDB():
-            """connect to the database"""
-            #retrieve credentials:
-            cmd = 'echo $AeroFSdir'
-            #read in the AeroFSdir string and
-            #chop off the newline character at the end
-            cdir = subprocess.check_output(cmd, shell=True)
-            cdir = cdir[0:len(cdir)-1]
-            credsf = open(cdir+'.credentials/SQL/csaye', 'r')
-            creds = credsf.read().split('\n')
-            conn = pymysql.connect(host=creds[0],
-                                   port=int(creds[1]),
-                                   user=creds[2],
-                                   passwd=creds[3],
-                                   db=creds[4])
-            #cur = conn.cursor()
-            return conn
-
         def getObservationId(self):
             """PURPOSE: To retrieve the observation_id. This will be written
             to the database and also used to make sure the file hasn't already
             been written to the DB."""
             self.getRawFileName()
-            conn = self.connectChironDB()
+            conn = ccdb.connectChironDB(legacy=True)
             cmd = 'SELECT observation_id FROM observations '
             cmd += "WHERE rawfilename='"+self.rawfilename+"';"
             cur = conn.cursor()
@@ -185,20 +167,20 @@ class storeSpectra:
             to make sure the file doesn't already exist
             in the DB before writing."""
             #establish DB connection:
-            conn = self.connectChironDB()
+            engine = ccdb.connectChironDB()
 
             if chkExist is True:
                 pass
             else:
-                self.specdf.to_sql('spectra', conn, flavor='mysql',
+                self.specdf.to_sql('spectra', engine,
                                    if_exists='append', index=False)
-            conn.close()
+            engine.close()
 
         def obsInSpectra(self):
             """PURPOSE: To use the rawfilename to check and see
             if the spectrum is already in the database."""
             self.getRawFileName()
-            conn = self.connectChironDB()
+            conn = ccdb.connectChironDB(legacy=True)
             cmd = 'SELECT DISTINCT rawFilename FROM spectra '
             cmd += "WHERE rawFilename='"+self.rawfilename+"';"
             cur = conn.cursor()
