@@ -3,7 +3,7 @@
 This document describes modifications made by hand
 to the chirondb MySQL database since 2014.12.02.
 
-2014.12.02:
+###2014.12.02
 To help keep track of the observation used to
 determine the H-alpha EW a new column named
 `hsrc_obsid` was added.
@@ -32,7 +32,7 @@ searching around to find the root of the cause was
 unsuccessful, and kill all current processes didn't
 fix it either, but restarting SQL did the trick.
 
-** *2014.12.03* **:
+###2014.12.03
 I deleted entries in the `halpha` table that were all
 NULLs. I'm not sure how those entries were added, but
 I suspect it occurs when running `getChironObservation.py`.
@@ -50,7 +50,7 @@ UPDATE halpha SET hsrc_obsid=observation_id WHERE hsrc_obsid IS NULL;
 Checking the results of this command shows that it
 behaved as expected!
 
-2014.12.09:
+###2014.12.09
 
 I want to keep track of when entries are added to the
 halpha table. To do so, I added a `datecreated` column:
@@ -59,7 +59,7 @@ halpha table. To do so, I added a `datecreated` column:
 ALTER TABLE halpha ADD (datecreated DATETIME);
 ```
 
-2014.12.10:
+###2014.12.10
 
 Added the `spectra` table to store the reduced
 spectra for all the observations:
@@ -74,7 +74,7 @@ lines up the way I did, but it was useful for debugging
 that `order` could not be a column name since
 it is a MySQL command.
 
-2014.12.14:
+###2014.12.14
 
 I added two more indexes (in addition to the automatic
  index on spec_id) on the observation_id and
@@ -87,7 +87,7 @@ I added two more indexes (in addition to the automatic
  ADD INDEX (rawFilename);
  ```
 
-2014.12.16:
+###2014.12.16
 
 There were a few outlier Eps Eri observations that
 I want to inspect the coordinates of. Unfortunately
@@ -377,7 +377,7 @@ DROP TABLE table_name
 ```
 
 MySQL didn't like the Tableau table; my guess is because
-of the # out front. A workaround is including ` marks
+of the # out front. A workaround is including tick marks
 on either side of the name:
 
 ```sql
@@ -439,11 +439,8 @@ WHERE observation_id in
   WHERE MID(rawfilename, 11, 6)='140725');
 ```
 
-That returned a `None` value for each table. I then
-reran the test code, which returned zeroes for each
-table, demonstrating that the DELETE code in fact
-worked. I also executed the test code (SELECT
-  COUNT(*)) on the night of `140726` to make sure
+That returned a None value for each table. I then reran the test code, which returned zeroes for each table, demonstrating that the DELETE code in fact worked. I also executed the test code `(SELECT
+  COUNT(*))` on the night of `140726` to make sure
 I didn't accidentally delete more than just the
 night of interest. Thankfully, I did not.
 
@@ -537,3 +534,33 @@ Records: 0  Duplicates: 0  Warnings: 0
 
 mysql>
 ```
+
+###2015.01.10
+
+####FLOATs
+
+Despite specifying the number of significant
+digits for the `original_time` field, MySQL
+kept returned an error message.
+
+An example of one of the values
+I was trying to write is `39609.056544`. From
+[the documentation](http://dev.mysql.com/doc/refman/5.0/en/floating-point-types.html), the syntax should be
+`FLOAT(M,D)`, where M is the total number of digits
+and D is the number of digits after the decimal
+point. If you count `39609.056544`, you will see
+there are 11 digits, with 6 after the decimal
+point, so the syntax *should* be `FLOAT(11,6)`.
+That results in an error.
+
+I modified the `original_time` column to have one more
+significant digit than the number I was trying
+to write:
+
+```sql
+ALTER TABLE expmetercounts MODIFY original_time FLOAT(12,6);
+Query OK, 0 rows affected (0.33 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+```
+
+and it worked. 
