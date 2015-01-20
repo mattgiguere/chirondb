@@ -1,0 +1,10 @@
+fieldName,variableType
+nad_id, INT AUTO_INCREMENT PRIMARY KEY
+observation_id, INT
+nad, FLOAT
+linecenter, FLOAT
+linewidth, FLOAT
+fitmechanism, varchar(64)
+comment, varchar(256)
+nsrc_obsid, INT
+datecreated, TIMESTAMP
