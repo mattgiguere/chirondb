@@ -4,6 +4,7 @@ environment,tables/EnvironmentTable.txt
 exposuremeter,tables/ExposureMeterTable.txt
 expmetercounts, tables/ExpmeterCountsTable.txt
 halpha,tables/HalphaTable.txt
+nad,tables/NaDTable.txt
 observations,tables/ObservationsTable.txt
 psfs,tables/PsfTable.txt
 reduction,tables/ReductionTable.txt
