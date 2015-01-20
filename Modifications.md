@@ -564,3 +564,38 @@ Records: 0  Duplicates: 0  Warnings: 0
 ```
 
 and it worked. I can now write to the `expmetercounts` table from the `expMeterCounts` notebook.
+
+###2015.01.19
+
+I added the table for the Sodium D Lines to the DB. Here are the commands that were used:
+
+```sql
+CREATE TABLE nad (nad_id INT AUTO_INCREMENT PRIMARY KEY);
+ALTER TABLE nad ADD (observation_id INT, nad1 FLOAT, linecenter1 FLOAT, linewidth1 FLOAT);
+ALTER TABLE nad ADD (nad2 FLOAT, linecenter2 FLOAT, linewidth2 FLOAT);
+ALTER TABLE nad ADD (fitmechanism varchar(64), comment varchar(256), nsrc_obsid INT, datecreated TIMESTAMP);
+```
+
+The resulting table looks like this:
+
+```sql
+mysql> describe nad;
++----------------+--------------+------+-----+-------------------+-----------------------------+
+| Field          | Type         | Null | Key | Default           | Extra                       |
++----------------+--------------+------+-----+-------------------+-----------------------------+
+| nad_id         | int(11)      | NO   | PRI | NULL              | auto_increment              |
+| observation_id | int(11)      | YES  |     | NULL              |                             |
+| nad1           | float        | YES  |     | NULL              |                             |
+| linecenter1    | float        | YES  |     | NULL              |                             |
+| linewidth1     | float        | YES  |     | NULL              |                             |
+| nad2           | float        | YES  |     | NULL              |                             |
+| linecenter2    | float        | YES  |     | NULL              |                             |
+| linewidth2     | float        | YES  |     | NULL              |                             |
+| fitmechanism   | varchar(64)  | YES  |     | NULL              |                             |
+| comment        | varchar(256) | YES  |     | NULL              |                             |
+| nsrc_obsid     | int(11)      | YES  |     | NULL              |                             |
+| datecreated    | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++----------------+--------------+------+-----+-------------------+-----------------------------+
+12 rows in set (0.01 sec)
+
+```
