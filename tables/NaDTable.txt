@@ -1,9 +1,12 @@
 fieldName,variableType
 nad_id, INT AUTO_INCREMENT PRIMARY KEY
 observation_id, INT
-nad, FLOAT
-linecenter, FLOAT
-linewidth, FLOAT
+nad1, FLOAT
+linecenter1, FLOAT
+linewidth1, FLOAT
+nad2, FLOAT
+linecenter2, FLOAT
+linewidth2, FLOAT
 fitmechanism, varchar(64)
 comment, varchar(256)
 nsrc_obsid, INT
