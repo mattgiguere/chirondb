@@ -599,3 +599,17 @@ mysql> describe nad;
 12 rows in set (0.01 sec)
 
 ```
+
+###2015.01.20
+
+I modified the `halpha` table to change the `datecreated` column to be a `TIMESTAMP` instead of a `DATETIME`:
+
+```sql
+ALTER TABLE halpha MODIFY datecreated TIMESTAMP;
+```
+
+which returned
+```sql
+```
+
+now I don't need to worry about providing the time each row was created, and it'll also be more accurate.
