@@ -610,6 +610,10 @@ ALTER TABLE halpha MODIFY datecreated TIMESTAMP;
 
 which returned
 ```sql
+mysql> ALTER TABLE halpha MODIFY datecreated TIMESTAMP;
+Query OK, 38028 rows affected (0.46 sec)
+Records: 38028  Duplicates: 0  Warnings: 0
+mysql>
 ```
 
 now I don't need to worry about providing the time each row was created, and it'll also be more accurate.
