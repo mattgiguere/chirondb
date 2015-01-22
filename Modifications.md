@@ -617,3 +617,16 @@ mysql>
 ```
 
 now I don't need to worry about providing the time each row was created, and it'll also be more accurate.
+
+###2015.01.21
+
+There was a problem with the `date_obs` columns in the `observations` table. Observations taken in the first few days of 2014 were reporting DATETIME values with YEARs of 2014. This was a problem with the telescope control system, and has since been resolved. However, the `date_obs` values in the DB need to be repaired. There was an additional problem where observations on January 1st were showing up with date_obs values of '--T'. To fix the `date_obs` values in the DB I used the following statement:
+
+```sql
+UPDATE observations SET date_obs = ADDDATE(date_obs, INTERVAL 1 YEAR) WHERE date_obs != '--T' AND mid(rawfilena 2)=15 and YEAR(date_obs)=2014;
+```
+
+The result was
+```sql
+3720 rows in set, 7409 warnings (0.78 sec)
+```
