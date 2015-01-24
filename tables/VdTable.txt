@@ -1,0 +1,3 @@
+fieldName,variableType
+vd_id, INT AUTO_INCREMENT PRIMARY KEY
+observation_id, INT
