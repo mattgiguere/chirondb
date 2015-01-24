@@ -10,5 +10,6 @@ psfs,tables/PsfTable.txt
 reduction,tables/ReductionTable.txt
 seeing,tables/SeeingTable.txt
 spectra,tables/SpectraTable.txt
+vds,tables/VdTable.txt
 velocities,tables/VelocityTable.txt
 weather,tables/WeatherTable.txt
