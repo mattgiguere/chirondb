@@ -630,3 +630,13 @@ The result was
 ```sql
 3720 rows in set, 7409 warnings (0.78 sec)
 ```
+
+###2015.01.25
+
+I added another table to the DB, this one, called `vds`, stores velocity structure information. Here were the commands:
+
+```sql
+CREATE TABLE vds (vd_id INT AUTO_INCREMENT PRIMARY KEY);
+ALTER TABLE vds ADD (observation_id INT, ordt INT, ordob INT, pixt INT, pixob INT, w0 FLOAT, wcof0 FLOAT, wcof1 FLOAT, wcof2 FLOAT, wcof3 FLOAT, icof0 FLOAT, icof1 FLOAT, icof2 FLOAT, icof3 FLOAT, scof0 FLOAT, scof1 FLOAT, scof2 FLOAT, scof3 FLOAT, cts INT, scat FLOAT, z FLOAT, errz FLOAT, fit FLOAT, ifit FLOAT, sfit FLOAT, npix INT, gpix INT, vel FLOAT, ivel FLOAT, svel FLOAT, weight FLOAT, depth FLOAT, sp1 FLOAT, sp2 FLOAT, spst VARCHAR(32), iparam00 FLOAT, iparam01 FLOAT, iparam02 FLOAT, iparam03 FLOAT, iparam04 FLOAT, iparam05 FLOAT, iparam06 FLOAT, iparam07 FLOAT, iparam08 FLOAT, iparam09 FLOAT, iparam10 FLOAT, iparam11 FLOAT, iparam12 FLOAT, iparam13 FLOAT, iparam14 FLOAT, iparam15 FLOAT, iparam16 FLOAT, iparam17 FLOAT, iparam18 FLOAT, iparam19 FLOAT, filename VARCHAR(128), tag VARCHAR(8));
+ALTER TABLE vds ADD INDEX (observation_id), ADD INDEX (filename);
+```
