@@ -21,7 +21,7 @@ __status__ = " Production"
 __version__ = '0.0.1'
 
 
-def addVds(star, tag):
+def addVds(star, tag, startnum=0):
     """
     PURPOSE: To add all the vd files for a given tag and star name to the DB.
     """
@@ -30,7 +30,7 @@ def addVds(star, tag):
     cmd = "ls -1d /tous/mir7/vel/vd"+star+"/vd"+tag+"*"
     filestring = subprocess.check_output(cmd, shell=True)
     files = filestring.split('\n')
-    files = files
+    files = files[startnum::]
     
     #loop through files, restoring each one and adding it
     #to the database:
@@ -100,10 +100,14 @@ def addVds(star, tag):
         #associated with this observation.
         engine = ccdb.connectChironDB()
         cmd = "SELECT observation_id FROM observations where obnm = '"+obnm+"';"
-        vd['observation_id'] = pd.read_sql_query(cmd, engine).values[0][0]
+        observation_id = pd.read_sql_query(cmd, engine).values
 
-        #lastly, write the results to the DB:
-        vd.to_sql('vds', engine, if_exists='append', index=False)
+        if observation_id.size > 0:
+            vd['observation_id'] = observation_id[0][0]
+            #lastly, write the results to the DB:
+            vd.to_sql('vds', engine, if_exists='append', index=False)
+        else:
+            print('Observation {} is not in the DB.'.format(obnm))        
 
 
 if __name__ == '__main__':
@@ -118,12 +122,15 @@ if __name__ == '__main__':
     parser.add_argument(
         'tag',
         help='the run tag to use (e.g. a)')
-    if len(sys.argv) > 3:
+    parser.add_argument(
+        'startnum',
+        help='the starting number')
+    if len(sys.argv) > 4:
         print('use the command')
-        print('python addVds.py star tag')
+        print('python addVds.py star tag startnum')
         sys.exit(2)
 
     args = parser.parse_args()
 
-    addVds(args.star, args.tag)
+    addVds(args.star, args.tag, startnum=int(args.startnum))
  
