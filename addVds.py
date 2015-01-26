@@ -30,7 +30,7 @@ def addVds(star, tag, startnum=0):
     cmd = "ls -1d /tous/mir7/vel/vd"+star+"/vd"+tag+"*"
     filestring = subprocess.check_output(cmd, shell=True)
     files = filestring.split('\n')
-    files = files[startnum::]
+    files = files[startnum:-1]
     
     #loop through files, restoring each one and adding it
     #to the database:
