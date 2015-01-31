@@ -1,6 +1,6 @@
 fieldName,variableType
 environ_id, INT AUTO_INCREMENT PRIMARY KEY
-timeStamp, TIMESTAMP
+sampleTime, DATETIME
 gratingTemp, FLOAT
 tableCenterTemp, FLOAT
 enclosureTemp, FLOAT
@@ -19,3 +19,4 @@ echellePressure, FLOAT
 ccdTemp, FLOAT
 neckTemp, FLOAT
 ccdSetpoint, FLOAT
+dateAdded, TIMESTAMP
