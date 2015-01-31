@@ -13,3 +13,4 @@ spectra,tables/SpectraTable.txt
 vds,tables/VdTable.txt
 velocities,tables/VelocityTable.txt
 weather,tables/WeatherTable.txt
+environ,tables/EnvironTable.txt
