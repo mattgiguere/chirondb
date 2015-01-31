@@ -640,3 +640,13 @@ CREATE TABLE vds (vd_id INT AUTO_INCREMENT PRIMARY KEY);
 ALTER TABLE vds ADD (observation_id INT, ordt INT, ordob INT, pixt INT, pixob INT, w0 FLOAT, wcof0 FLOAT, wcof1 FLOAT, wcof2 FLOAT, wcof3 FLOAT, icof0 FLOAT, icof1 FLOAT, icof2 FLOAT, icof3 FLOAT, scof0 FLOAT, scof1 FLOAT, scof2 FLOAT, scof3 FLOAT, cts INT, scat FLOAT, z FLOAT, errz FLOAT, fit FLOAT, ifit FLOAT, sfit FLOAT, npix INT, gpix INT, vel FLOAT, ivel FLOAT, svel FLOAT, weight FLOAT, depth FLOAT, sp1 FLOAT, sp2 FLOAT, spst VARCHAR(32), iparam00 FLOAT, iparam01 FLOAT, iparam02 FLOAT, iparam03 FLOAT, iparam04 FLOAT, iparam05 FLOAT, iparam06 FLOAT, iparam07 FLOAT, iparam08 FLOAT, iparam09 FLOAT, iparam10 FLOAT, iparam11 FLOAT, iparam12 FLOAT, iparam13 FLOAT, iparam14 FLOAT, iparam15 FLOAT, iparam16 FLOAT, iparam17 FLOAT, iparam18 FLOAT, iparam19 FLOAT, filename VARCHAR(128), tag VARCHAR(8));
 ALTER TABLE vds ADD INDEX (observation_id), ADD INDEX (filename);
 ```
+
+###2015.01.31
+
+I created a new table to house all of the environmental information in the CHIRON DB. There was already an `environment` table, but that only included information from the FITS headers. This new table includes much more information, including setpoints for various heaters. Below are the commands that were used to add the table.
+
+```sql
+CREATE TABLE environ (environ_id INT AUTO_INCREMENT PRIMARY KEY);
+ALTER TABLE environ ADD (sampleTime DATETIME, gratingTemp FLOAT, tableCenterTemp FLOAT, enclosureTemp FLOAT, iodineCellTemp FLOAT, enclosureSetpoint FLOAT, iodineCellSetpoint FLOAT, enclosureTemp2 FLOAT, tableTempLow FLOAT, structureTemp FLOAT, instrumentSetpoint FLOAT, instrumentTemp FLOAT, coudeTemp FLOAT, heaterSetpoint FLOAT, barometer FLOAT, echellePressure FLOAT, ccdTemp FLOAT, neckTemp FLOAT, ccdSetpoint FLOAT, dateAdded TIMESTAMP);
+ALTER TABLE environ ADD INDEX (sampleTime);
+```
