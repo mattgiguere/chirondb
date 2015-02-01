@@ -25,22 +25,22 @@ __version__ = '0.0.1'
 def driveDates(date_beg, date_end, logtodb='environ'):
     
     if date_beg < 9e5:
-        date_beg += 2e6
+        date_beg += 20000000
         date_begs = str(date_beg)
         dtBeg = datetime.date(int(date_begs[0:4]), int(date_begs[4:6]), int(date_begs[6:8]))
     
     if date_end < 9e5:
-        date_end += 2e6
-        date_ends = str(date_eng)
+        date_end += 20000000
+        date_ends = str(date_end)
         dtEnd = datetime.date(int(date_ends[0:4]), int(date_ends[4:6]), int(date_ends[6:8]))
     
     ndates = dtEnd - dtBeg
         
-    for i in range(ndates.days):
+    for i in range(ndates.days+1):
         
         #create a datetime object for the current iteration:
         dtCur = dtBeg + datetime.timedelta(days=i)
-        print('Now on date: {}'.format(dtCur))
+        #print('Now on date: {}'.format(dtCur))
         
         if logtodb == 'environ':
             try:
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--logtodb',
         help='Optional: the log to drive to the DB. Current options are: environ.')
-    if len(sys.argv) > 3:
+    if len(sys.argv) > 5:
         print('use the command')
         print('python driveDates.py date_beg date_end --logtodb dbTableName')
         print('Example: python driveDates.py 141021 150131 --logtodb environ')
