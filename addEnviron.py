@@ -8,7 +8,7 @@ from __future__ import division, print_function
 import argparse
 import sys
 import numpy as np
-
+import os
 
 try:
     import pandas as pd
@@ -87,10 +87,11 @@ def addEnviron(date):
                   'instrumentTemp', 'coudeTemp']]
 
     #restore and merge the heater log:
-    ht_in = pd.read_table(htfn, sep='\s', engine='python', header=None)
-    ht_in.columns = ['sampleTime', 'jnk1', 'heaterSetpoint']
-    ht = ht_in[['sampleTime', 'heaterSetpoint']]
-    df = df.merge(ht, on='sampleTime', how='left')
+    if os.path.isfile(htfn):
+        ht_in = pd.read_table(htfn, sep='\s', engine='python', header=None)
+        ht_in.columns = ['sampleTime', 'jnk1', 'heaterSetpoint']
+        ht = ht_in[['sampleTime', 'heaterSetpoint']]
+        df = df.merge(ht, on='sampleTime', how='left')
 
     #restore and merge the chitemp log:
     ct_in = pd.read_table(ctfn, sep='\s', engine='python', header=None)
