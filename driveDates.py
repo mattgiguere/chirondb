@@ -27,12 +27,12 @@ def driveDates(date_beg, date_end, logtodb='environ'):
     if date_beg < 9e5:
         date_beg += 2e6
         date_begs = str(date_beg)
-        dtBeg = datetime.date(date_begs[0:4], date_begs[4:6], date_begs[6:8])
+        dtBeg = datetime.date(int(date_begs[0:4]), int(date_begs[4:6]), int(date_begs[6:8]))
     
     if date_end < 9e5:
         date_end += 2e6
         date_ends = str(date_eng)
-        dtEnd = datetime.date(date_ends[0:4], date_ends[4:6], date_ends[6:8])
+        dtEnd = datetime.date(int(date_ends[0:4]), int(date_ends[4:6]), int(date_ends[6:8]))
     
     ndates = dtEnd - dtBeg
         
