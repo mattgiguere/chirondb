@@ -87,10 +87,6 @@ def addEnviron(date):
     #keep only the new entries:
     df = df[pd.isnull(df['environ_id'])]
     
-    #now convert the sampleTimes back to strings
-    #to write the the DB:
-    df['sampleTime'] = [str(i)[0:19] for i in df['sampleTime'].values]
-    
     #now append the data to the environ table:
     print('{0}: Added {1} rows to the DB.'.format(date, len(df)))
     if len(df) > 0:
