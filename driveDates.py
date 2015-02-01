@@ -68,7 +68,7 @@ if __name__ == '__main__':
         'date_beg',
         help='The beginning date of the date range in yymmdd format')
     parser.add_argument(
-        'date_eng',
+        'date_end',
         help='The ending date of the date range in yymmdd format ')
     parser.add_argument(
         '--logtodb',
@@ -79,12 +79,12 @@ if __name__ == '__main__':
         print('Example: python driveDates.py 141021 150131 --logtodb environ')
         sys.exit(2)
 
+    args = parser.parse_args()
+
     if args.logtodb:
         args.logtodb = args.logtodb
     else:
         args.logtodb = 'environ'
 
-    args = parser.parse_args()
-
-    driveDates(int(args.date_beg), args.date_end, logtodb=args.logtodb)
+    driveDates(int(args.date_beg), int(args.date_end), logtodb=args.logtodb)
  
