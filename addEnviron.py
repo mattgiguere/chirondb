@@ -7,6 +7,8 @@ Created on 2015-01-31T17:24:25
 from __future__ import division, print_function
 import argparse
 import sys
+import numpy as np
+
 
 try:
     import pandas as pd
@@ -90,8 +92,10 @@ def addEnviron(date):
     df['sampleTime'] = [str(i)[0:19] for i in df['sampleTime'].values]
     
     #now append the data to the environ table:
+    print('{0}: Added {1} rows to the DB.'.format(date, len(df)))
     if len(df) > 0:
         df.to_sql('environ', engine, if_exists='append', index=False)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='addEnviron: a routine to parse the ' +
