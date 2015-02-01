@@ -112,6 +112,9 @@ def addEnviron(date):
     
     #keep only the new entries:
     df = df[pd.isnull(df['environ_id'])]
+
+    #drop duplicates with the same sampleTime if they existed in the log file:
+    df.drop_duplicates(subset='sampleTime', inplace=True)
     
     #now append the data to the environ table:
     print('{0}: Added {1} rows to the DB.'.format(date, len(df)))
