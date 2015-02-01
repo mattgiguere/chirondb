@@ -67,11 +67,21 @@ def addEnviron(date):
 
     #restore the insttemp log:
     df_in = pd.read_table(instfn, sep='\s', engine='python', header=None)
-    df_in.columns = ['sampleTime', 'jnk1', 'gratingTemp', 'jnk2', 'tableCenterTemp', 'jnk3', 'enclosureTemp', 'jnk4',
+    if (int(date) > 120519 & int(date) < 130416):
+        df_in.columns = ['sampleTime', 'jnk1', 'gratingTemp', 'jnk2', 'tableCenterTemp', 'jnk3', 'enclosureTemp', 'jnk4',
                   'iodineCellTemp', 'jnk5', 'enclosureSetpoint', 'jnk6', 'iodineCellSetpoint', 'jnk7',
                   'enclosureTemp2', 'jnk8', 'tableTempLow', 'jnk9', 'structureTemp', 'jnk10', 'instrumentSetpoint',
-                  'jnk11', 'instrumentTemp', 'jnk12', 'coudeTemp']
-    df = df_in[['sampleTime', 'gratingTemp', 'tableCenterTemp', 'enclosureTemp',
+                  'jnk11', 'instrumentTemp']
+        df = df_in[['sampleTime', 'gratingTemp', 'tableCenterTemp', 'enclosureTemp',
+                  'iodineCellTemp', 'enclosureSetpoint', 'iodineCellSetpoint',
+                  'enclosureTemp2', 'tableTempLow', 'structureTemp', 'instrumentSetpoint',
+                  'instrumentTemp']]
+    else:
+        df_in.columns = ['sampleTime', 'jnk1', 'gratingTemp', 'jnk2', 'tableCenterTemp', 'jnk3', 'enclosureTemp', 'jnk4',
+                      'iodineCellTemp', 'jnk5', 'enclosureSetpoint', 'jnk6', 'iodineCellSetpoint', 'jnk7',
+                      'enclosureTemp2', 'jnk8', 'tableTempLow', 'jnk9', 'structureTemp', 'jnk10', 'instrumentSetpoint',
+                      'jnk11', 'instrumentTemp', 'jnk12', 'coudeTemp']
+        df = df_in[['sampleTime', 'gratingTemp', 'tableCenterTemp', 'enclosureTemp',
                   'iodineCellTemp', 'enclosureSetpoint', 'iodineCellSetpoint',
                   'enclosureTemp2', 'tableTempLow', 'structureTemp', 'instrumentSetpoint',
                   'instrumentTemp', 'coudeTemp']]
