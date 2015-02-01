@@ -66,8 +66,8 @@ def addEnviron(date):
     dtfn = '/tous/mir7/logs/temps/dettemp/dettemp'+date+'.log'
 
     #restore the insttemp log:
-    df_in = pd.read_table(instfn, sep='\s', engine='python', header=None)
-    if (int(date) > 120519 & int(date) < 130416):
+    df_in = pd.read_table(instfn, sep='\s{1,}', engine='python', header=None)
+    if ((int(date) > 120519) & (int(date) < 130410)):
         df_in.columns = ['sampleTime', 'jnk1', 'gratingTemp', 'jnk2', 'tableCenterTemp', 'jnk3', 'enclosureTemp', 'jnk4',
                   'iodineCellTemp', 'jnk5', 'enclosureSetpoint', 'jnk6', 'iodineCellSetpoint', 'jnk7',
                   'enclosureTemp2', 'jnk8', 'tableTempLow', 'jnk9', 'structureTemp', 'jnk10', 'instrumentSetpoint',
