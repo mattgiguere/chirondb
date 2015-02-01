@@ -16,13 +16,6 @@ except ImportError:
     print('You need numpy installed')
     sys.exit(1)
 
-try:
-    import matplotlib.pyplot as plt
-    got_mpl = True
-except ImportError:
-    print('You need matplotlib installed to get a plot')
-    got_mpl = False
-
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
@@ -50,7 +43,13 @@ def driveDates(date_beg, date_end, logtodb='environ'):
         print('Now on date: {}'.format(dtCur))
         
         if logtodb == 'environ':
-            from addEnviron import addEnviron
+            try:
+                from addEnviron import addEnviron
+            except ImportError:
+                print('You need addEnviron installed')
+                print('')
+                sys.exit(1)
+
             #change the datetime object to a string in yymmdd format:
             dtymd = str(dtCur).replace('-', '')[2::]
             
@@ -66,19 +65,26 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='argparse object.')
     parser.add_argument(
-        'arg1',
-        help='This argument does something.')
+        'date_beg',
+        help='The beginning date of the date range in yymmdd format')
     parser.add_argument(
-        'arg2',
-        help='This argument does something else. By specifying ' +
-             'the "nargs=>" makes this argument not required.',
-             nargs='?')
+        'date_eng',
+        help='The ending date of the date range in yymmdd format ')
+    parser.add_argument(
+        '--logtodb',
+        help='Optional: the log to drive to the DB. Current options are: environ.')
     if len(sys.argv) > 3:
         print('use the command')
-        print('python filename.py tablenum columnnum')
+        print('python driveDates.py date_beg date_end --logtodb dbTableName')
+        print('Example: python driveDates.py 141021 150131 --logtodb environ')
         sys.exit(2)
+
+    if args.logtodb:
+        args.logtodb = args.logtodb
+    else:
+        args.logtodb = 'environ'
 
     args = parser.parse_args()
 
-    driveDates(int(args.arg1), args.arg2)
+    driveDates(int(args.date_beg), args.date_end, logtodb=args.logtodb)
  
