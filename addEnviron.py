@@ -31,7 +31,33 @@ __version__ = '0.0.1'
 
 def addEnviron(date):
     """PURPOSE:
-    To add environmental information to the CHIRON DB
+    To add environmental information to the CHIRON DB. This routine
+    reads in the insttemp, heater, chitemp, and dettemp logs and
+    adds that information to the environ table of the chirondb
+    MySQL DB. It can either be called from the command line:
+
+    Example:
+    %python addEnviron 150131
+
+    Or imported and used in the python environment:
+
+    Example:
+
+    from addEnviron import addEnviron
+    addEnviron(150131)
+
+    If you are processing a bunch of dates, try using the `driveDates`
+    routine:
+
+    Example:
+
+    %python driveDates 140101 150131 --logtodb environ
+
+    or 
+
+    from driveDates import driveDates
+    driveDates(140101, 150131, logtodb='environ')
+
     """
     #filenames for the four environmental logs:
     instfn = '/tous/mir7/logs/temps/insttemp/insttemp'+date+'.log'
