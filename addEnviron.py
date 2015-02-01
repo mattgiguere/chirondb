@@ -94,16 +94,18 @@ def addEnviron(date):
         df = df.merge(ht, on='sampleTime', how='left')
 
     #restore and merge the chitemp log:
-    ct_in = pd.read_table(ctfn, sep='\s', engine='python', header=None)
-    ct_in.columns = ['sampleTime', 'jnk', 'barometer', 'jnk', 'echellePressure']
-    ct = ct_in[['sampleTime', 'barometer', 'echellePressure']]
-    df = df.merge(ct, on='sampleTime')
+    if os.path.isfile(ctfn):
+        ct_in = pd.read_table(ctfn, sep='\s', engine='python', header=None)
+        ct_in.columns = ['sampleTime', 'jnk', 'barometer', 'jnk', 'echellePressure']
+        ct = ct_in[['sampleTime', 'barometer', 'echellePressure']]
+        df = df.merge(ct, on='sampleTime')
 
     #restore and merge the dettemp log:
-    dt_in = pd.read_table(dtfn, sep='\s', engine='python', header=None)
-    dt_in.columns = ['sampleTime', 'jnk1', 'ccdTemp', 'jnk2', 'neckTemp', 'jnk3', 'ccdSetpoint']
-    dt = dt_in[['sampleTime', 'ccdTemp', 'neckTemp', 'ccdSetpoint']]
-    df = df.merge(dt, on='sampleTime')
+    if os.path.isfile(dtfn):
+        dt_in = pd.read_table(dtfn, sep='\s', engine='python', header=None)
+        dt_in.columns = ['sampleTime', 'jnk1', 'ccdTemp', 'jnk2', 'neckTemp', 'jnk3', 'ccdSetpoint']
+        dt = dt_in[['sampleTime', 'ccdTemp', 'neckTemp', 'ccdSetpoint']]
+        df = df.merge(dt, on='sampleTime')
 
     #add an empty column for the timestamp of when the 
     #entry was added to the DB:
