@@ -29,12 +29,7 @@ __version__ = '0.0.1'
 
 def addEnviron(date):
     """PURPOSE:
-    To add environmental information to the CHIRON DB. 
-
-    date: the date in yymmdd format
-
-    example from the command line:
-        python addEnviron 150131
+    To add environmental information to the CHIRON DB
     """
     #filenames for the four environmental logs:
     instfn = '/tous/mir7/logs/temps/insttemp/insttemp'+date+'.log'
@@ -76,10 +71,27 @@ def addEnviron(date):
     df['dateAdded'] = None
     #connect to the CHIRON DB:
     engine = ccdb.connectChironDB()
+    
+    #see if any entries already exist:
+    cmd = "SELECT sampleTime, environ_id FROM environ WHERE sampleTime IN ('"+"','".join(df.sampleTime.values)+"');"
+    alreadyExists = pd.read_sql_query(cmd, engine)
+    df['sampleTime'] = pd.to_datetime(df['sampleTime'])
+    alreadyExists['sampleTime'] = pd.to_datetime(alreadyExists['sampleTime'])
+    
+    #now merge to create environ_id column. rows with NaNs for 
+    #their environ_id will be unique, and should be added to the DB:
+    df = df.merge(alreadyExists, how='outer', on='sampleTime')
+    
+    #keep only the new entries:
+    df = df[pd.isnull(df['environ_id'])]
+    
+    #now convert the sampleTimes back to strings
+    #to write the the DB:
+    df['sampleTime'] = [str(i)[0:19] for i in df['sampleTime'].values]
+    
     #now append the data to the environ table:
-    df.to_sql('environ', engine, if_exists='append', index=False)
-
-
+    if len(df) > 0:
+        df.to_sql('environ', engine, if_exists='append', index=False)
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='addEnviron: a routine to parse the ' +
