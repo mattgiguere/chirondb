@@ -47,7 +47,7 @@ def driveDates(date_beg, date_end, logtodb='environ'):
                 from addEnviron import addEnviron
             except ImportError:
                 print('You need addEnviron installed')
-                print('')
+                print('https://github.com/mattgiguere/chirondb')
                 sys.exit(1)
 
             #change the datetime object to a string in yymmdd format:
