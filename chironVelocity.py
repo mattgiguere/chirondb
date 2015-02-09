@@ -10,9 +10,15 @@ import argparse
 import subprocess
 
 try:
-    from idlToPandas import *
+    from idlToPandas import idlToPandas as itp
 except:
     print("You need to install idlToPandas")
+    sys.exit(1)
+
+try:
+    from pyutil import connectChironDB as ccdb
+except:
+    print('You need matt\'s pyutils installed')
     sys.exit(1)
 
 try:
@@ -69,7 +75,8 @@ def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
         adir = getAeroDir()
         path = adir+'data/CHIRPS/rvs/'
     fullFileName = path+'vst'+str(starName)+tag+'.dat'
-    pdf = idlToPandas(fullFileName)
+    print(fullFileName)
+    pdf = itp.idlToPandas(fullFileName)
 
     #get the observation_id elements from the SQL DB:
     obsids = getObservationIds(tableDict, pdf)
@@ -119,12 +126,15 @@ def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
         print("File name: "+tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
                 'obnm', 'obsValue'])
         #connect to the chiron database
-        conn = connectChironDB()
+        conn = ccdb.connectChironDB(legacy=True)
         cur = conn.cursor()
 
         #check to see if the observation already exists in the velocities
         #and psfs tables. If so, we need to UPDATE the observation instead
         #of INSERTing a new one.
+        print('obsid: {}'.format(obsids[oidx][0]))
+        print('tag: {}'.format(tag))
+        print('comment: {}'.format(comment))
         obExists = sqlObsExists(obsids[oidx][0], 'velocities', tag=tag, comment=comment)
 
         #now INSERT/UPDATE the line in the velocities table:
@@ -146,13 +156,17 @@ def sqlObsExists(obsid, tableName, tag='', comment=''):
     """This routine will check to see if the observation already exists in
     the SQL tables. This is necessary in order to determine if we should
     UPDATE an existing line, or INSERT a new one."""
+
+    print('tag is: {}'.format(tag))
+    print('comment is: {}'.format(comment))
     cmd = "SELECT * FROM " + tableName
     cmd += " WHERE observation_id = " + str(obsid)
-    cmd += " AND tag=" + str(tag)
-    cmd += " AND comment=" + str(comment)
+    cmd += " AND tag='" + str(tag) + "'"
+    cmd += " AND comment='" + str(comment) +"';"
 
+    print(cmd)
     #connect to the chiron database
-    conn = connectChironDB()
+    conn = ccdb.connectChironDB(legacy=True)
     cur = conn.cursor()
 
     cur.execute(cmd)
@@ -239,21 +253,6 @@ def getAeroDir():
     return adir
 
 
-def connectChironDB():
-    """connect to the database"""
-    #retrieve credentials:
-    adir = getAeroDir()
-    credsf = open(adir+'.credentials/SQL/csaye', 'r')
-    creds = credsf.read().split('\n')
-    conn = pymysql.connect(host=creds[0],
-                           port=int(creds[1]),
-                           user=creds[2],
-                           passwd=creds[3],
-                           db=creds[4])
-    #cur = conn.cursor()
-    return conn
-
-
 def getObservationIds(tableDict, pdf):
     """The purpose of this routine is to retrieve the observation_ids
     from the database for all observations in the VST structures. It
@@ -261,7 +260,7 @@ def getObservationIds(tableDict, pdf):
     and psfs tables."""
 
     #connect to the chiron database
-    conn = connectChironDB()
+    conn = ccdb.connectChironDB(legacy=True)
     cur = conn.cursor()
 
     #now create a list of the OBNM names (e.g. 'achi140402.1234')
@@ -349,9 +348,9 @@ if __name__ == '__main__':
              ' only overwrite previous entries if they' +
              ' share the same comment.',
              nargs='?', const='', type=str)
-    if len(sys.argv) > 4:
+    if len(sys.argv) > 6:
         print('use the command')
-        print('python chironVelocity.py fileName path cdir')
+        print('python chironVelocity.py starhdnum --path --cdir --tag --comment')
         sys.exit(2)
 
     args = parser.parse_args()
