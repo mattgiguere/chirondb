@@ -132,9 +132,6 @@ def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
         #check to see if the observation already exists in the velocities
         #and psfs tables. If so, we need to UPDATE the observation instead
         #of INSERTing a new one.
-        print('obsid: {}'.format(obsids[oidx][0]))
-        print('tag: {}'.format(tag))
-        print('comment: {}'.format(comment))
         obExists = sqlObsExists(obsids[oidx][0], 'velocities', tag=tag, comment=comment)
 
         #now INSERT/UPDATE the line in the velocities table:
@@ -157,14 +154,11 @@ def sqlObsExists(obsid, tableName, tag='', comment=''):
     the SQL tables. This is necessary in order to determine if we should
     UPDATE an existing line, or INSERT a new one."""
 
-    print('tag is: {}'.format(tag))
-    print('comment is: {}'.format(comment))
     cmd = "SELECT * FROM " + tableName
     cmd += " WHERE observation_id = " + str(obsid)
     cmd += " AND tag='" + str(tag) + "'"
     cmd += " AND comment='" + str(comment) +"';"
 
-    print(cmd)
     #connect to the chiron database
     conn = ccdb.connectChironDB(legacy=True)
     cur = conn.cursor()
