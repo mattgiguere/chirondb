@@ -324,15 +324,31 @@ if __name__ == '__main__':
         'starname',
         help='The HD number or star you would like to restore.')
     parser.add_argument(
-        'path',
+        '--path',
         help='[Optional] The path to the file. If not specified' +
              ' it will use the current working directory.',
              nargs='?', const='')
     parser.add_argument(
-        'cdir',
+        '--cdir',
         help='[Optional] If set to 1 this will set' +
              ' the path to the CHIRPS RV default path.',
              nargs='?', const=0, type=int)
+    parser.add_argument(
+        '--tag',
+        help='[Optional] If set it will append a tag' +
+             ' to the filename restored. It will also' +
+             ' only overwrite entries in the database' +
+             ' that share this same tag. The default' +
+             ' values is empty (\'\')',
+             nargs='?', const='', type=str)
+    parser.add_argument(
+        '--comment',
+        help='[Optional] If set, adding a comment will' +
+             ' append the given string to the comment' +
+             ' column in the database. This will also' +
+             ' only overwrite previous entries if they' +
+             ' share the same comment.',
+             nargs='?', const='', type=str)
     if len(sys.argv) > 4:
         print('use the command')
         print('python chironVelocity.py fileName path cdir')
@@ -340,6 +356,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     ##Example: Type the following at the command line:
-    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 0
+    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 0 --tag 'a' --comment ''
 
-    chironVelocity(args.starname, path=args.path, cdir=args.cdir)
+    chironVelocity(args.starname, path=args.path, cdir=args.cdir, tag=args.tag, comment=args.comment)
