@@ -15,3 +15,5 @@ med_all,FLOAT
 errvel,FLOAT
 mdchi,FLOAT
 nchunk,INT
+tag,varchar(16)
+comment,varchar(128)
