@@ -650,3 +650,13 @@ CREATE TABLE environ (environ_id INT AUTO_INCREMENT PRIMARY KEY);
 ALTER TABLE environ ADD (sampleTime DATETIME, gratingTemp FLOAT, tableCenterTemp FLOAT, enclosureTemp FLOAT, iodineCellTemp FLOAT, enclosureSetpoint FLOAT, iodineCellSetpoint FLOAT, enclosureTemp2 FLOAT, tableTempLow FLOAT, structureTemp FLOAT, instrumentSetpoint FLOAT, instrumentTemp FLOAT, coudeTemp FLOAT, heaterSetpoint FLOAT, barometer FLOAT, echellePressure FLOAT, ccdTemp FLOAT, neckTemp FLOAT, ccdSetpoint FLOAT, dateAdded TIMESTAMP);
 ALTER TABLE environ ADD INDEX (sampleTime);
 ```
+
+###2015.02.09
+
+To test and compare Doppler code options velocity structures were created with different "tags" in the filename. To accommodate these tags
+a couple new columns were added to the `velocities` and `psfs` tables:
+
+```sql
+ALTER TABLE velocities ADD (tag varchar(16), comment varchar(128));
+ALTER TABLE psfs ADD (tag varchar(16), comment varchar(128));
+```
