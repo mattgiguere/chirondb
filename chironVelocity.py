@@ -42,8 +42,8 @@ except:
 __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
-__status__ = " Development NOT(Prototype or Production)"
-__version__ = '0.0.2'
+__status__ = "Production"
+__version__ = '0.1.0'
 
 
 def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
