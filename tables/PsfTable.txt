@@ -75,3 +75,5 @@ psfsig12,FLOAT
 psfsig13,FLOAT
 psfsig14,FLOAT
 psfsig15,FLOAT
+tag,varchar(16)
+comment,varchar(128)
