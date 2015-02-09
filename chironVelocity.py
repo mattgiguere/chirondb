@@ -37,10 +37,10 @@ __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
 __status__ = " Development NOT(Prototype or Production)"
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 
-def chironVelocity(starName, path='', cdir=0):
+def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
     """PURPOSE: This is the main routine that drives everything.
     Restore a CHIRON IDL velocity structure save file, restore the
     instructions on how to map that velocity structure to the SQL
@@ -68,7 +68,7 @@ def chironVelocity(starName, path='', cdir=0):
     if cdir == 1:
         adir = getAeroDir()
         path = adir+'data/CHIRPS/rvs/'
-    fullFileName = path+'vst'+str(starName)+'.dat'
+    fullFileName = path+'vst'+str(starName)+tag+'.dat'
     pdf = idlToPandas(fullFileName)
 
     #get the observation_id elements from the SQL DB:
@@ -85,6 +85,16 @@ def chironVelocity(starName, path='', cdir=0):
             'observation_id', 'obsValue'] = obsids[oidx][0]
         tableDict['psfs'].loc[tableDict['psfs']['fieldName'] ==
             'observation_id', 'obsValue'] = obsids[oidx][0]
+
+        #update the tag and comment:
+        tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
+            'tag', 'obsValue'] = tag
+        tableDict['psfs'].loc[tableDict['psfs']['fieldName'] ==
+            'tag', 'obsValue'] = tag
+        tableDict['velocities'].loc[tableDict['velocities']['fieldName'] ==
+            'comment', 'obsValue'] = comment
+        tableDict['psfs'].loc[tableDict['psfs']['fieldName'] ==
+            'comment', 'obsValue'] = comment
 
         #now insert the rest of the values into tableDict
         for idx in range(len(idlSqlMap)):
@@ -115,7 +125,7 @@ def chironVelocity(starName, path='', cdir=0):
         #check to see if the observation already exists in the velocities
         #and psfs tables. If so, we need to UPDATE the observation instead
         #of INSERTing a new one.
-        obExists = sqlObsExists(obsids[oidx][0], 'velocities')
+        obExists = sqlObsExists(obsids[oidx][0], 'velocities', tag=tag, comment=comment)
 
         #now INSERT/UPDATE the line in the velocities table:
         cmd = createInsertCmd(tableDict, 'velocities', update=obExists,
@@ -125,19 +135,21 @@ def chironVelocity(starName, path='', cdir=0):
         conn.commit()
 
         #now repeat for the psfs table:
-        obExists = sqlObsExists(obsids[oidx][0], 'psfs')
+        obExists = sqlObsExists(obsids[oidx][0], 'psfs', tag=tag, comment=comment)
         cmd = createInsertCmd(tableDict, 'psfs', update=obExists,
                               obsid=obsids[oidx][0])
         cur.execute(cmd)
         conn.commit()
 
 
-def sqlObsExists(obsid, tableName):
+def sqlObsExists(obsid, tableName, tag='', comment=''):
     """This routine will check to see if the observation already exists in
     the SQL tables. This is necessary in order to determine if we should
     UPDATE an existing line, or INSERT a new one."""
     cmd = "SELECT * FROM " + tableName
     cmd += " WHERE observation_id = " + str(obsid)
+    cmd += " AND tag=" + str(tag)
+    cmd += " AND comment=" + str(comment)
 
     #connect to the chiron database
     conn = connectChironDB()
@@ -328,6 +340,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     ##Example: Type the following at the command line:
-    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 1
+    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 0
 
     chironVelocity(args.starname, path=args.path, cdir=args.cdir)
