@@ -24,7 +24,7 @@ __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
 __status__ = " Development NOT(Prototype or Production)"
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 
 def deleteNights(night, execute=False):
@@ -50,11 +50,11 @@ def deleteNights(night, execute=False):
     """
 
     #read in the table names to delete all entries from:
-    tbls = pd.read_csv('tables/tableListFull.txt')
+    tbls = pd.read_csv('tables/tableList.txt')
 
     #make sure the date is a string:
     night = str(night)
-    conn = ccdb.connectChironDB()
+    conn = ccdb.connectChironDB(legacy=True)
     cur = conn.cursor()
     for i in range(len(tbls)):
         iname = tbls.loc[i, 'tableName']
