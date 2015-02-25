@@ -43,7 +43,7 @@ __author__ = "Matt Giguere (github: @mattgiguere)"
 __maintainer__ = "Matt Giguere"
 __email__ = "matthew.giguere@yale.edu"
 __status__ = "Production"
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 def chironVelocity(starName, path='', cdir=0, tag='', comment='', tagOnFilename=''):
@@ -328,7 +328,7 @@ def getObservationIds(tableDict, pdf):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='To restore a CHIRON velocity structure and add the' +
-                    'contents to the database')
+                    ' contents to the chirondb MySQL database.')
     parser.add_argument(
         'starname',
         help='The HD number or star you would like to restore.')
