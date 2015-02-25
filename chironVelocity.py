@@ -46,11 +46,27 @@ __status__ = "Production"
 __version__ = '0.1.0'
 
 
-def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
+def chironVelocity(starName, path='', cdir=0, tag='', comment='', tagOnFilename=''):
     """PURPOSE: This is the main routine that drives everything.
     Restore a CHIRON IDL velocity structure save file, restore the
     instructions on how to map that velocity structure to the SQL
-    database and add the contents to the database."""
+    database and add the contents to the database.
+
+    starName: The HD number of the star (e.g. 10700 is Tau Ceti)
+
+    path: The path to the vst file (e.g. '/tous/mir7/vel_post/')
+
+    cdir: if set to 1, set path to ${AeroFSdir}data/CHIRPS/rvs/
+
+    tag: the tag id for the Doppler analysis (e.g. 'a' is for the symmetric
+          PSF FTS that has been used since early 2015)
+
+    comment: an optional comment to include when writing to the DB
+
+    tagOnFilename: optional string appended to end of filename
+            (e.g., if tagOnFilename='agb', then the code will restore
+            path+'/vst'+starName+'agb.dat')
+    """
 
     #The two SQL tables that the IDL velocity structure save files
     #are written to:
@@ -74,7 +90,7 @@ def chironVelocity(starName, path='', cdir=0, tag='', comment=''):
     if cdir == 1:
         adir = getAeroDir()
         path = adir+'data/CHIRPS/rvs/'
-    fullFileName = path+'vst'+str(starName)+tag+'.dat'
+    fullFileName = path+'vst'+str(starName)+tagOnFilename+'.dat'
     print(fullFileName)
     pdf = itp.idlToPandas(fullFileName)
 
@@ -342,13 +358,27 @@ if __name__ == '__main__':
              ' only overwrite previous entries if they' +
              ' share the same comment.',
              nargs='?', const='', type=str)
-    if len(sys.argv) > 6:
+    parser.add_argument(
+        '--tof',
+        help='[Optional] If set, adding a tof will' +
+             ' append tof to the end of the filename.',
+             nargs='?', const='', type=str)
+    if len(sys.argv) > 11:
         print('use the command')
-        print('python chironVelocity.py starhdnum --path --cdir --tag --comment')
+        print('python chironVelocity.py starhdnum --path --cdir --tag --comment --tof')
         sys.exit(2)
 
     args = parser.parse_args()
-    ##Example: Type the following at the command line:
-    ##python chironVelocity.py 10700 '/tous/mir7/vel_post' 0 --tag 'a' --comment ''
 
-    chironVelocity(args.starname, path=args.path, cdir=args.cdir, tag=args.tag, comment=args.comment)
+    if args.tof:
+        tof = args.tof
+    else:
+        tof = ''
+    ##Example: Type the following at the command line:
+    ##python chironVelocity.py 10700 --path '/tous/mir7/vel_post/' 0 --tag 'a' --comment ''
+    print('Star name: {}'.format(args.starname))
+    print('path: {}'.format(args.path))
+    print('tag: {}'.format(args.tag))
+
+    chironVelocity(args.starname, path=args.path, cdir=args.cdir, tag=args.tag,
+                   comment=args.comment, tagOnFilename=tof)
