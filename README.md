@@ -4,8 +4,9 @@
 
 [![MIT-Lic](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/mattgiguere/shellScripts/blob/master/LICENSE)
 
-###Descriptions
+###File Descriptions
 ---------------------------------
+- **addEnviron.py**: a python command line tool for reading in data from the CHIRON environmental logs (e.g. temperatures measurements, pressure measurements, setpoints) and adding that data to the `chirondb` MySQL database.
 - **getChironFiles.py**: a python command line tool for reading in data from FITS file and adding it to the `chirondb` MySQL database.
 
  - **arguments**:
