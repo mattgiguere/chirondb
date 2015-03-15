@@ -7,6 +7,13 @@
 ###File Descriptions
 ---------------------------------
 - **addEnviron.py**: a python command line tool for reading in data from the CHIRON environmental logs (e.g. temperatures measurements, pressure measurements, setpoints) and adding that data to the `chirondb` MySQL database.
+ - **arguments**:
+   - *date*: the date of a logs to restore in yymmdd format.
+ - **example**:
+    ```python
+    addEnviron.py 150314
+    ```
+
 - **getChironFiles.py**: a python command line tool for reading in data from FITS file and adding it to the `chirondb` MySQL database.
 
  - **arguments**:
