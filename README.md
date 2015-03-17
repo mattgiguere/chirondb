@@ -9,10 +9,38 @@
 - **addEnviron.py**: a python command line tool for reading in data from the CHIRON environmental logs (e.g. temperatures measurements, pressure measurements, setpoints) and adding that data to the `chirondb` MySQL database.
  - **arguments**:
    - *date*: the date of a logs to restore in yymmdd format.
- - **example**:
-    ```python
+ - **examples**:
+
+    From the command line:
+    ```sh
     addEnviron.py 150314
     ```
+
+    From within python:
+    ```python
+    import addEnviron as ae
+    as.addEnviron(150314)
+    ```
+
+
+- **addVds.ipynb**: An IPython notebook describing the code in the `addVds.py` file.
+
+- **addVds.py**: A python script to import IDL velocity data structures into the chirondb MySQL database.
+ - **arguments**
+   - *star*: The name of the star (typically the HD number) to be read and imported into the database.
+   - *tag*: The "tag" of the file. Different tags indicate something different about the RV analysis. For example, a tag of "a" was appended to the vd filename to indicate that the way the point spread function (PSF) was handled changed for the Fourier Transform Spectrograph (FTS) scan of the iodine cell. A tag of "f" was added to the vd filename for analysis carried out prior to the FTS PSF modification.
+   - *startnum*: The Doppler analysis creates a separate vd file for every observation. Specifying the optional *startnum* argument will only add a subset of the vd files to the database, starting from *startnum* and extending to through the remainder of the files in the directory.
+ - **examples**
+   - From the comman line:
+    ```sh
+    addVds.py 10700 a 0
+    ```
+   - From within Python:
+   ```python
+   import addVds as vd
+   vd.addVds('10700', 'a', startnum=0)
+   ```
+
 
 - **getChironFiles.py**: a python command line tool for reading in data from FITS file and adding it to the `chirondb` MySQL database.
 
