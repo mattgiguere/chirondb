@@ -11,12 +11,12 @@
    - *date*: the date of a logs to restore in yymmdd format.
  - **examples**:
 
-    From the command line:
+    - From the command line:
     ```sh
     addEnviron.py 150314
     ```
 
-    From within python:
+    - From within Python:
     ```python
     import addEnviron as ae
     as.addEnviron(150314)
@@ -40,6 +40,25 @@
    import addVds as vd
    vd.addVds('10700', 'a', startnum=0)
    ```
+
+
+- **chironDBObject.ipynb**: An IPython notebook that was used for the debugging on `chironObject.py`
+
+
+- **chironObject.py**: A python script that contains a class with methods to add information about an observation to the chiron MySQL database. This can be called in several ways.
+   - **examples**:
+
+    - From the command line:
+     ```python
+     chironObject(rawName)
+     ```
+    where `rawName` is the name of the observation you want to add to the database.
+
+    - From within Python:
+    ```python
+    import chironObject as co
+    co.kapowObservation(rawName)
+    ```
 
 
 - **getChironFiles.py**: a python command line tool for reading in data from FITS file and adding it to the `chirondb` MySQL database.
